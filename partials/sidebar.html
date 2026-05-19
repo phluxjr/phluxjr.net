@@ -24,10 +24,48 @@
       </a>
     </nav>
     <div class="sidebar-spacer"></div>
+    <button class="sidebar-theme" id="a11yToggle" aria-label="accessibility options">
+      <span>accessibility</span>
+    </button>
     <button class="sidebar-theme" id="themeToggle" aria-label="toggle theme">
       <span id="themeLabel">mocha</span>
       <div class="theme-pill" id="themePill"></div>
     </button>
   </div>
 </aside>
+
+<div class="a11y-overlay" id="a11yOverlay">
+  <div class="a11y-modal">
+    <div class="a11y-header">
+      <span>accessibility</span>
+      <button class="a11y-close" id="a11yClose">✕</button>
+    </div>
+
+    <div class="a11y-option">
+      <label>background</label>
+      <div class="a11y-pills">
+        <button class="a11y-pill" data-key="bg" data-val="on">on</button>
+        <button class="a11y-pill" data-key="bg" data-val="off">off</button>
+      </div>
+    </div>
+
+    <div class="a11y-option">
+      <label>font</label>
+      <div class="a11y-pills">
+        <button class="a11y-pill" data-key="font" data-val="default">default</button>
+        <button class="a11y-pill" data-key="font" data-val="dyslexic">opendyslexic</button>
+      </div>
+    </div>
+
+    <div class="a11y-option">
+      <label>font size</label>
+      <div class="a11y-pills">
+        <button class="a11y-pill" data-key="size" data-val="small">small</button>
+        <button class="a11y-pill" data-key="size" data-val="default">default</button>
+        <button class="a11y-pill" data-key="size" data-val="large">large</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="/partials/sidebar.js"></script>
