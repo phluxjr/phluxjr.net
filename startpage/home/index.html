@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="../../style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0f172a;
+            --bg-light: #f1f5f9;
+            --card-dark: #1e293b;
+            --card-light: #ffffff;
+            --text-dark: #f8fafc;
+            --text-light: #0f172a;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            transition: background 0.3s ease;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body.dark {
+            background: var(--bg-dark);
+            color: var(--text-dark);
+        }
+
+        body.light {
+            background: var(--bg-light);
+            color: var(--text-light);
+        }
+
+        body.gradient1 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text-dark);
+        }
+
+        body.gradient2 {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: var(--text-dark);
+        }
+
+        body.gradient3 {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: var(--text-dark);
+        }
+
+        body.gradient4 {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: var(--text-dark);
+        }
+
+        body.custom-bg {
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--text-dark);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .clock-widget {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .time {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .date {
+            font-size: 1.5rem;
+            opacity: 0.8;
+        }
+
+        .search-container {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 3rem;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #0f172a;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .bookmarks {
+            width: 100%;
+            max-width: 900px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .bookmark {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+            position: relative;
+        }
+
+        .bookmark:hover {
+            transform: translateY(-4px);
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .bookmark-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .bookmark-name {
+            font-size: 0.9rem;
+            word-break: break-word;
+        }
+
+        .bookmark-delete {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: rgba(239, 68, 68, 0.8);
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8rem;
+        }
+
+        .bookmark:hover .bookmark-delete {
+            display: flex;
+        }
+
+        .settings-btn {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: all 0.2s;
+        }
+
+        .settings-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .settings-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 2rem;
+            overflow-y: auto;
+            transition: right 0.3s ease;
+            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+        }
+
+        .settings-panel.open {
+            right: 0;
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            color: white;
+        }
+
+        .settings-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .settings-section {
+            margin-bottom: 2rem;
+            color: white;
+        }
+
+        .settings-section h3 {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .setting-item {
+            margin-bottom: 1rem;
+        }
+
+        .setting-item label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .setting-item input,
+        .setting-item select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 1rem;
+        }
+
+        .setting-item input:focus,
+        .setting-item select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            background: var(--accent);
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 0.5rem;
+        }
+
+        .btn:hover {
+            background: var(--accent-hover);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .bookmark-form {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .theme-option {
+            padding: 0.75rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .theme-option.active {
+            border-color: var(--accent);
+            background: rgba(59, 130, 246, 0.2);
+        }
+
+        .theme-option:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .add-bookmark-btn {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .add-bookmark-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            .time {
+                font-size: 2.5rem;
+            }
+            .date {
+                font-size: 1.2rem;
+            }
+            .settings-panel {
+                width: 100%;
+                right: -100%;
+            }
+            .bookmarks {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<!--#include virtual="/partials/sidebar.html" -->
+    <div class="container">
+        <div class="clock-widget" id="clockWidget">
+            <div class="time" id="time"></div>
+            <div class="date" id="date"></div>
+        </div>
+
+        <div class="search-container">
+            <form class="search-form" id="searchForm">
+                <input 
+                    type="text" 
+                    class="search-input" 
+                    id="searchInput" 
+                    placeholder="Search the web..."
+                    autocomplete="off"
+                >
+            </form>
+        </div>
+
+        <div class="bookmarks" id="bookmarks"></div>
+    </div>
+
+    <button class="settings-btn" id="settingsBtn">⚙️</button>
+
+    <div class="settings-panel" id="settingsPanel">
+        <div class="settings-header">
+            <h2 class="settings-title">Settings</h2>
+            <button class="close-btn" id="closeSettings">×</button>
+        </div>
+
+        <div class="settings-section">
+            <h3>Appearance</h3>
+            <div class="setting-item">
+                <label>Theme</label>
+                <div class="theme-grid" id="themeGrid">
+                    <div class="theme-option" data-theme="dark">Dark</div>
+                    <div class="theme-option" data-theme="light">Light</div>
+                    <div class="theme-option" data-theme="gradient1">Purple</div>
+                    <div class="theme-option" data-theme="gradient2">Pink</div>
+                    <div class="theme-option" data-theme="gradient3">Blue</div>
+                    <div class="theme-option" data-theme="gradient4">Green</div>
+                </div>
+            </div>
+            <div class="setting-item">
+                <label>Custom Background URL</label>
+                <input type="text" id="customBg" placeholder="https://example.com/image.jpg">
+                <button class="btn btn-secondary" id="applyBg">Apply Background</button>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3>Widgets</h3>
+            <div class="checkbox-item">
+                <input type="checkbox" id="showClock" checked>
+                <label for="showClock">Show Clock</label>
+            </div>
+            <div class="checkbox-item">
+                <input type="checkbox" id="showDate" checked>
+                <label for="showDate">Show Date</label>
+            </div>
+            <div class="setting-item">
+                <label>Clock Format</label>
+                <select id="clockFormat">
+                    <option value="12h">12 Hour</option>
+                    <option value="24h">24 Hour</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3>Search</h3>
+            <div class="setting-item">
+                <label>Search Engine</label>
+                <select id="searchEngine">
+                    <option value="duckduckgo">DuckDuckGo</option>
+                    <option value="google">Google</option>
+                    <option value="bing">Bing</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3>Add Bookmark</h3>
+            <div class="bookmark-form">
+                <div class="setting-item">
+                    <label>Name</label>
+                    <input type="text" id="bookmarkName" placeholder="YouTube">
+                </div>
+                <div class="setting-item">
+                    <label>URL</label>
+                    <input type="text" id="bookmarkUrl" placeholder="https://youtube.com">
+                </div>
+                <div class="setting-item">
+                    <label>Icon (emoji)</label>
+                    <input type="text" id="bookmarkIcon" placeholder="📺" maxlength="2">
+                </div>
+                <button class="btn" id="addBookmark">Add Bookmark</button>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3>Data</h3>
+            <button class="btn btn-secondary" id="exportConfig">Export Settings</button>
+            <button class="btn btn-secondary" id="importConfig">Import Settings</button>
+            <input type="file" id="importFile" style="display: none;" accept=".json">
+            <button class="btn btn-secondary" id="resetConfig">Reset All</button>
+        </div>
+    </div>
+
+    <script>
+        const config = {
+            bookmarks: [],
+            theme: 'gradient1',
+            customBg: '',
+            showClock: true,
+            showDate: true,
+            clockFormat: '12h',
+            searchEngine: 'duckduckgo'
+        };
+
+        // Load config
+        function loadConfig() {
+            try {
+                const saved = localStorage.getItem('homepage-config');
+                if (saved) {
+                    const loaded = JSON.parse(saved);
+                    Object.assign(config, loaded);
+                    console.log('Config loaded:', config);
+                }
+            } catch (error) {
+                console.log('No saved config, using defaults:', error);
+            }
+            applyConfig();
+        }
+
+        // Save config
+        function saveConfig() {
+            try {
+                localStorage.setItem('homepage-config', JSON.stringify(config));
+                console.log('Config saved');
+            } catch (error) {
+                console.error('Failed to save config:', error);
+                alert('Failed to save settings. Storage may not be available.');
+            }
+        }
+
+        // Apply config to UI
+        function applyConfig() {
+            document.body.className = config.customBg ? 'custom-bg' : config.theme;
+            if (config.customBg) {
+                document.body.style.backgroundImage = `url(${config.customBg})`;
+            }
+            
+            document.getElementById('showClock').checked = config.showClock;
+            document.getElementById('showDate').checked = config.showDate;
+            document.getElementById('clockFormat').value = config.clockFormat;
+            document.getElementById('searchEngine').value = config.searchEngine;
+            document.getElementById('customBg').value = config.customBg;
+            
+            document.querySelectorAll('.theme-option').forEach(el => {
+                el.classList.toggle('active', el.dataset.theme === config.theme);
+            });
+            
+            document.getElementById('clockWidget').style.display = 
+                (config.showClock || config.showDate) ? 'block' : 'none';
+            
+            renderBookmarks();
+        }
+
+        // Render bookmarks
+        function renderBookmarks() {
+            const container = document.getElementById('bookmarks');
+            container.innerHTML = '';
+            
+            config.bookmarks.forEach(bookmark => {
+                const div = document.createElement('div');
+                div.className = 'bookmark';
+                div.innerHTML = `
+                    <div class="bookmark-icon">${bookmark.icon || '🔗'}</div>
+                    <div class="bookmark-name">${bookmark.name}</div>
+                    <button class="bookmark-delete">×</button>
+                `;
+                
+                div.addEventListener('click', (e) => {
+                    if (!e.target.classList.contains('bookmark-delete')) {
+                        window.location.href = bookmark.url;
+                    }
+                });
+                
+                div.querySelector('.bookmark-delete').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    config.bookmarks = config.bookmarks.filter(b => b.id !== bookmark.id);
+                    saveConfig();
+                    renderBookmarks();
+                });
+                
+                container.appendChild(div);
+            });
+            
+            // Add bookmark button
+            const addBtn = document.createElement('div');
+            addBtn.className = 'add-bookmark-btn';
+            addBtn.innerHTML = '+';
+            addBtn.addEventListener('click', () => {
+                document.getElementById('settingsPanel').classList.add('open');
+                document.getElementById('bookmarkName').focus();
+            });
+            container.appendChild(addBtn);
+        }
+
+        // Update clock
+        function updateClock() {
+            const now = new Date();
+            let hours = now.getHours();
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            
+            if (config.clockFormat === '12h') {
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12 || 12;
+                document.getElementById('time').textContent = `${hours}:${minutes} ${ampm}`;
+            } else {
+                document.getElementById('time').textContent = `${hours.toString().padStart(2, '0')}:${minutes}`;
+            }
+            
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('date').textContent = now.toLocaleDateString('en-US', options);
+            
+            document.getElementById('time').style.display = config.showClock ? 'block' : 'none';
+            document.getElementById('date').style.display = config.showDate ? 'block' : 'none';
+        }
+
+        // Search
+        document.getElementById('searchForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) return;
+            
+            const engines = {
+                duckduckgo: `https://duckduckgo.com/?q=${encodeURIComponent(query)}`,
+                google: `https://www.google.com/search?q=${encodeURIComponent(query)}`,
+                bing: `https://www.bing.com/search?q=${encodeURIComponent(query)}`
+            };
+            
+            window.location.href = engines[config.searchEngine];
+        });
+
+        // Settings panel
+        document.getElementById('settingsBtn').addEventListener('click', () => {
+            document.getElementById('settingsPanel').classList.add('open');
+        });
+
+        document.getElementById('closeSettings').addEventListener('click', () => {
+            document.getElementById('settingsPanel').classList.remove('open');
+        });
+
+        // Theme selection
+        document.querySelectorAll('.theme-option').forEach(el => {
+            el.addEventListener('click', () => {
+                config.theme = el.dataset.theme;
+                config.customBg = '';
+                document.body.style.backgroundImage = '';
+                saveConfig();
+                applyConfig();
+            });
+        });
+
+        // Custom background
+        document.getElementById('applyBg').addEventListener('click', () => {
+            config.customBg = document.getElementById('customBg').value;
+            saveConfig();
+            applyConfig();
+        });
+
+        // Widget toggles
+        document.getElementById('showClock').addEventListener('change', (e) => {
+            config.showClock = e.target.checked;
+            saveConfig();
+            applyConfig();
+        });
+
+        document.getElementById('showDate').addEventListener('change', (e) => {
+            config.showDate = e.target.checked;
+            saveConfig();
+            applyConfig();
+        });
+
+        document.getElementById('clockFormat').addEventListener('change', (e) => {
+            config.clockFormat = e.target.value;
+            saveConfig();
+            updateClock();
+        });
+
+        document.getElementById('searchEngine').addEventListener('change', (e) => {
+            config.searchEngine = e.target.value;
+            saveConfig();
+        });
+
+        // Add bookmark
+        document.getElementById('addBookmark').addEventListener('click', () => {
+            const name = document.getElementById('bookmarkName').value.trim();
+            const url = document.getElementById('bookmarkUrl').value.trim();
+            const icon = document.getElementById('bookmarkIcon').value.trim();
+            
+            if (!name || !url) return;
+            
+            config.bookmarks.push({
+                id: Date.now(),
+                name,
+                url: url.startsWith('http') ? url : 'https://' + url,
+                icon: icon || '🔗'
+            });
+            
+            document.getElementById('bookmarkName').value = '';
+            document.getElementById('bookmarkUrl').value = '';
+            document.getElementById('bookmarkIcon').value = '';
+            
+            saveConfig();
+            renderBookmarks();
+        });
+
+        // Export/Import
+        document.getElementById('exportConfig').addEventListener('click', () => {
+            const data = JSON.stringify(config, null, 2);
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'homepage-config.json';
+            a.click();
+        });
+
+        document.getElementById('importConfig').addEventListener('click', () => {
+            document.getElementById('importFile').click();
+        });
+
+        document.getElementById('importFile').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    Object.assign(config, imported);
+                    saveConfig();
+                    applyConfig();
+                    alert('Settings imported successfully!');
+                } catch (error) {
+                    alert('Invalid config file');
+                }
+            };
+            reader.readAsText(file);
+        });
+
+        document.getElementById('resetConfig').addEventListener('click', () => {
+            if (confirm('Reset all settings? This cannot be undone.')) {
+                config.bookmarks = [];
+                config.theme = 'gradient1';
+                config.customBg = '';
+                config.showClock = true;
+                config.showDate = true;
+                config.clockFormat = '12h';
+                config.searchEngine = 'duckduckgo';
+                saveConfig();
+                applyConfig();
+            }
+        });
+
+        // Initialize
+        setInterval(updateClock, 1000);
+        updateClock();
+        loadConfig();
+    </script>
+</body>
+</html>

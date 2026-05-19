@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>conway's game of life</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #0a0a0a;
+            color: #00ff00;
+            font-family: monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        canvas {
+            border: 2px solid #00ff00;
+            cursor: crosshair;
+            image-rendering: pixelated;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        button {
+            background: #1a1a1a;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-family: monospace;
+            transition: all 0.2s;
+        }
+        
+        button:hover {
+            background: #00ff00;
+            color: #0a0a0a;
+        }
+        
+        button:active {
+            transform: scale(0.95);
+        }
+        
+        .info {
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        .presets {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        select {
+            background: #1a1a1a;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            padding: 8px;
+            font-family: monospace;
+        }
+        
+        input[type="range"] {
+            accent-color: #00ff00;
+        }
+    </style>
+</head>
+<body>
+<!--#include virtual="/partials/sidebar.html" -->
+    <h1>conway's game of life</h1>
+    
+    <canvas id="canvas"></canvas>
+    
+    <div class="controls">
+        <button id="startBtn">start</button>
+        <button id="pauseBtn">pause</button>
+        <button id="clearBtn">clear</button>
+        <button id="randomBtn">random</button>
+    </div>
+    
+    <div class="presets">
+        <select id="presetSelect">
+            <option value="">-- load preset --</option>
+            <option value="glider">glider</option>
+            <option value="lwss">lightweight spaceship</option>
+            <option value="pulsar">pulsar</option>
+            <option value="gosper">gosper glider gun</option>
+            <option value="acorn">acorn</option>
+        </select>
+    </div>
+    
+    <div class="info">
+        <p>click cells to toggle • drag to pan • scroll to zoom</p>
+        <p>generation: <span id="gen">0</span> • alive: <span id="alive">0</span></p>
+        <p>speed: <input type="range" id="speed" min="1" max="60" value="10"> <span id="speedVal">10</span> fps</p>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        const cellSize = 8;
+        const cols = 100;
+        const rows = 60;
+        
+        canvas.width = cols * cellSize;
+        canvas.height = rows * cellSize;
+        
+        let grid = createGrid();
+        let running = false;
+        let generation = 0;
+        let intervalId = null;
+        let fps = 10;
+        
+        // zoom and pan
+        let zoom = 1;
+        let offsetX = 0;
+        let offsetY = 0;
+        let isDragging = false;
+        let lastX = 0;
+        let lastY = 0;
+        
+        function createGrid() {
+            return Array(rows).fill(null).map(() => Array(cols).fill(0));
+        }
+        
+        function draw() {
+            ctx.save();
+            ctx.fillStyle = '#0a0a0a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.translate(offsetX, offsetY);
+            ctx.scale(zoom, zoom);
+            
+            // draw grid lines
+            ctx.strokeStyle = '#1a1a1a';
+            ctx.lineWidth = 1 / zoom;
+            
+            for (let i = 0; i <= rows; i++) {
+                ctx.beginPath();
+                ctx.moveTo(0, i * cellSize);
+                ctx.lineTo(cols * cellSize, i * cellSize);
+                ctx.stroke();
+            }
+            
+            for (let j = 0; j <= cols; j++) {
+                ctx.beginPath();
+                ctx.moveTo(j * cellSize, 0);
+                ctx.lineTo(j * cellSize, rows * cellSize);
+                ctx.stroke();
+            }
+            
+            let aliveCount = 0;
+            
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    if (grid[i][j]) {
+                        ctx.fillStyle = '#00ff00';
+                        ctx.fillRect(j * cellSize + 1, i * cellSize + 1, cellSize - 2, cellSize - 2);
+                        aliveCount++;
+                    }
+                }
+            }
+            
+            ctx.restore();
+            
+            document.getElementById('alive').textContent = aliveCount;
+        }
+        
+        function countNeighbors(row, col) {
+            let count = 0;
+            for (let i = -1; i <= 1; i++) {
+                for (let j = -1; j <= 1; j++) {
+                    if (i === 0 && j === 0) continue;
+                    const r = (row + i + rows) % rows;
+                    const c = (col + j + cols) % cols;
+                    count += grid[r][c];
+                }
+            }
+            return count;
+        }
+        
+        function nextGeneration() {
+            const next = createGrid();
+            
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    const neighbors = countNeighbors(i, j);
+                    
+                    if (grid[i][j]) {
+                        next[i][j] = (neighbors === 2 || neighbors === 3) ? 1 : 0;
+                    } else {
+                        next[i][j] = neighbors === 3 ? 1 : 0;
+                    }
+                }
+            }
+            
+            grid = next;
+            generation++;
+            document.getElementById('gen').textContent = generation;
+            draw();
+        }
+        
+        function start() {
+            if (!running) {
+                running = true;
+                intervalId = setInterval(nextGeneration, 1000 / fps);
+            }
+        }
+        
+        function pause() {
+            running = false;
+            if (intervalId) {
+                clearInterval(intervalId);
+                intervalId = null;
+            }
+        }
+        
+        function clear() {
+            pause();
+            grid = createGrid();
+            generation = 0;
+            document.getElementById('gen').textContent = 0;
+            draw();
+        }
+        
+        function randomize() {
+            pause();
+            grid = createGrid();
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    grid[i][j] = Math.random() > 0.7 ? 1 : 0;
+                }
+            }
+            generation = 0;
+            document.getElementById('gen').textContent = 0;
+            draw();
+        }
+        
+        canvas.addEventListener('click', (e) => {
+            if (isDragging) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = (e.clientX - rect.left - offsetX) / zoom;
+            const mouseY = (e.clientY - rect.top - offsetY) / zoom;
+            
+            const x = Math.floor(mouseX / cellSize);
+            const y = Math.floor(mouseY / cellSize);
+            
+            if (x >= 0 && x < cols && y >= 0 && y < rows) {
+                grid[y][x] = grid[y][x] ? 0 : 1;
+                draw();
+            }
+        });
+        
+        canvas.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            
+            const worldX = (mouseX - offsetX) / zoom;
+            const worldY = (mouseY - offsetY) / zoom;
+            
+            const delta = e.deltaY > 0 ? 0.9 : 1.1;
+            const newZoom = Math.min(Math.max(zoom * delta, 0.5), 4);
+            
+            offsetX = mouseX - worldX * newZoom;
+            offsetY = mouseY - worldY * newZoom;
+            zoom = newZoom;
+            
+            draw();
+        });
+        
+        canvas.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            lastX = e.clientX;
+            lastY = e.clientY;
+            canvas.style.cursor = 'grabbing';
+        });
+        
+        canvas.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                const dx = e.clientX - lastX;
+                const dy = e.clientY - lastY;
+                offsetX += dx;
+                offsetY += dy;
+                lastX = e.clientX;
+                lastY = e.clientY;
+                draw();
+            }
+        });
+        
+        canvas.addEventListener('mouseup', () => {
+            isDragging = false;
+            canvas.style.cursor = 'crosshair';
+        });
+        
+        canvas.addEventListener('mouseleave', () => {
+            isDragging = false;
+            canvas.style.cursor = 'crosshair';
+        });
+        
+        document.getElementById('startBtn').addEventListener('click', start);
+        document.getElementById('pauseBtn').addEventListener('click', pause);
+        document.getElementById('clearBtn').addEventListener('click', clear);
+        document.getElementById('randomBtn').addEventListener('click', randomize);
+        
+        document.getElementById('speed').addEventListener('input', (e) => {
+            fps = parseInt(e.target.value);
+            document.getElementById('speedVal').textContent = fps;
+            if (running) {
+                pause();
+                start();
+            }
+        });
+        
+        document.getElementById('presetSelect').addEventListener('change', (e) => {
+            const preset = e.target.value;
+            if (!preset) return;
+            
+            pause();
+            grid = createGrid();
+            
+            const centerRow = Math.floor(rows / 2);
+            const centerCol = Math.floor(cols / 2);
+            
+            const presets = {
+                glider: [[1,0],[2,1],[0,2],[1,2],[2,2]],
+                lwss: [[1,0],[4,0],[0,1],[0,2],[4,2],[0,3],[1,3],[2,3],[3,3]],
+                pulsar: [
+                    [2,0],[3,0],[4,0],[8,0],[9,0],[10,0],
+                    [0,2],[5,2],[7,2],[12,2],
+                    [0,3],[5,3],[7,3],[12,3],
+                    [0,4],[5,4],[7,4],[12,4],
+                    [2,5],[3,5],[4,5],[8,5],[9,5],[10,5],
+                    [2,7],[3,7],[4,7],[8,7],[9,7],[10,7],
+                    [0,8],[5,8],[7,8],[12,8],
+                    [0,9],[5,9],[7,9],[12,9],
+                    [0,10],[5,10],[7,10],[12,10],
+                    [2,12],[3,12],[4,12],[8,12],[9,12],[10,12]
+                ],
+                gosper: [
+                    [4,0],[5,0],[4,1],[5,1],[4,10],[5,10],[6,10],[3,11],[7,11],[2,12],[8,12],
+                    [2,13],[8,13],[5,14],[3,15],[7,15],[4,16],[5,16],[6,16],[5,17],[2,20],[3,20],
+                    [4,20],[2,21],[3,21],[4,21],[1,22],[5,22],[0,24],[1,24],[5,24],[6,24],[2,34],
+                    [3,34],[2,35],[3,35]
+                ],
+                acorn: [[1,0],[3,1],[0,2],[1,2],[4,2],[5,2],[6,2]]
+            };
+            
+            const pattern = presets[preset];
+            pattern.forEach(([y, x]) => {
+                const row = centerRow + y - 5;
+                const col = centerCol + x - 5;
+                if (row >= 0 && row < rows && col >= 0 && col < cols) {
+                    grid[row][col] = 1;
+                }
+            });
+            
+            generation = 0;
+            document.getElementById('gen').textContent = 0;
+            e.target.value = '';
+            draw();
+        });
+        
+        draw();
+    </script>
+</body>
+</html>

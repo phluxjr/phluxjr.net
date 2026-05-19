@@ -1,0 +1,7 @@
+# Robots.txt
+
+# all snacks are currently out of order
+# please send snak
+
+User-agent: *
+Allow: /

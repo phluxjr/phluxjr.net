@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>style.css - phluxjr.net</title>
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    .code-wrapper {
+      position: relative;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+
+    pre {
+      background: #181825; /* mocha mantle */
+      color: #cdd6f4; /* mocha text */
+      padding: 20px;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 0.9em;
+      line-height: 1.5;
+      border: 1px solid #313244; /* mocha surface0 */
+    }
+
+    code {
+      font-family: 'JetBrainsMono Nerd Font', 'JetBrains Mono', monospace;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 8px 16px;
+      background: #313244; /* mocha surface0 */
+      color: #cdd6f4; /* mocha text */
+      border: 1px solid #45475a; /* mocha surface1 */
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9em;
+      transition: all 0.3s;
+      font-family: 'JetBrainsMono Nerd Font', 'JetBrains Mono', monospace;
+    }
+
+    .copy-btn:hover {
+      background: #45475a; /* mocha surface1 */
+      border-color: #89b4fa; /* mocha blue */
+    }
+
+    .copy-btn.copied {
+      background: #a6e3a1; /* mocha green */
+      border-color: #a6e3a1;
+      color: #1e1e2e; /* mocha base */
+    }
+
+    .error {
+      color: #f38ba8; /* mocha red */
+      padding: 20px;
+      background: #1e1e2e; /* mocha base */
+      border-radius: 4px;
+      border-left: 4px solid #f38ba8;
+      margin-top: 20px;
+    }
+
+    .loading {
+      color: #a6adc8; /* mocha subtext0 */
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+<!--#include virtual="/partials/sidebar.html" -->
+  <div class="container">
+    <h1>template.html</h1>
+    <div class="code-wrapper">
+      <button class="copy-btn" onclick="copyToClipboard()">copy</button>
+      <pre><code id="code-block" class="loading">loading...</code></pre>
+    </div>
+    <div id="error"></div>
+  </div>
+
+  <script>
+    fetch('/template.html')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`http error! status: ${response.status}`);
+        }
+        return response.text();
+      })
+      .then(css => {
+        document.getElementById('code-block').textContent = css;
+        document.getElementById('code-block').classList.remove('loading');
+      })
+      .catch(error => {
+        const errorDiv = document.getElementById('error');
+        errorDiv.innerHTML = `<div class="error">error loading html: ${error.message}</div>`;
+        document.getElementById('code-block').textContent = '';
+      });
+
+    function copyToClipboard() {
+      const codeBlock = document.getElementById('code-block');
+      const text = codeBlock.textContent;
+      
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        btn.textContent = 'copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'copy';
+          btn.classList.remove('copied');
+        }, 2000);
+      }).catch(err => {
+        console.error('failed to copy:', err);
+      });
+    }
+  </script>
+</body>
+</html>
+

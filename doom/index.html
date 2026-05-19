@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOOM</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            overflow: hidden;
+        }
+        
+        iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            border: none;
+        }
+        
+        #popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            border: 3px solid #ff0000;
+            border-radius: 10px;
+            padding: 30px;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.7);
+            z-index: 1000;
+            max-width: 500px;
+        }
+        
+        #popup h2 {
+            color: #ff0000;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        #popup p {
+            margin: 8px 0;
+            font-size: 16px;
+        }
+        
+        #popup button {
+            display: block;
+            margin: 20px auto 0;
+            padding: 12px 30px;
+            background: #ff0000;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        #popup button:hover {
+            background: #cc0000;
+        }
+    </style>
+</head>
+<body>
+<!--#include virtual="/partials/sidebar.html" -->
+    <iframe src="https://diekmann.github.io/wasm-fizzbuzz/doom/" allow="autoplay"></iframe>
+    
+    <div id="popup">
+        <h2>🔥 DOOM Controls 🔥</h2>
+        <p><strong>Arrow Keys:</strong> Move and turn</p>
+        <p><strong>Ctrl:</strong> Fire</p>
+        <p><strong>Space:</strong> Open doors</p>
+        <p><strong>Alt + Arrow Keys:</strong> Strafe</p>
+        <p><strong>Enter:</strong> Start game</p>
+        <p>Press Enter on the DOOM screen to start!</p>
+        <button onclick="closePopup()">Start Playing!</button>
+    </div>
+
+    <script>
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

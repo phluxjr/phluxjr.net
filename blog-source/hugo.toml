@@ -1,0 +1,8 @@
+baseURL = 'https://phluxjr.net/blog/'
+languageCode = 'en-us'
+title = 'phluxjr blog'
+theme = 'phluxjr'
+buildFuture = true
+
+[permalinks]
+  posts = '/:filename/'

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>the choice - phluxjr.net</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    body {
+      background: #000;
+      color: #0f0;
+      font-family: monospace;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    .container {
+      text-align: center;
+      z-index: 10;
+    }
+
+    .message {
+      font-size: 24px;
+      margin-bottom: 60px;
+      text-shadow: 0 0 10px #0f0;
+      animation: flicker 3s infinite;
+    }
+
+    @keyframes flicker {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; }
+    }
+
+    .pills {
+      display: flex;
+      gap: 80px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .pill {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .pill:hover {
+      transform: scale(1.2);
+      filter: brightness(1.3);
+    }
+
+    .red-pill {
+      background: radial-gradient(circle, #ff4444, #cc0000);
+      box-shadow: 0 0 30px rgba(255, 68, 68, 0.8);
+      animation-delay: 0s;
+    }
+
+    .blue-pill {
+      background: radial-gradient(circle, #4444ff, #0000cc);
+      box-shadow: 0 0 30px rgba(68, 68, 255, 0.8);
+      animation-delay: 1.5s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .pill-label {
+      margin-top: 20px;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .red-pill-container .pill-label {
+      color: #ff4444;
+      text-shadow: 0 0 10px #ff4444;
+    }
+
+    .blue-pill-container .pill-label {
+      color: #4444ff;
+      text-shadow: 0 0 10px #4444ff;
+    }
+
+    .matrix-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      opacity: 0.1;
+      font-family: monospace;
+      font-size: 14px;
+      line-height: 14px;
+      overflow: hidden;
+    }
+
+    .matrix-column {
+      position: absolute;
+      top: -100%;
+      white-space: pre;
+      color: #0f0;
+      animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+      to { top: 100%; }
+    }
+  </style>
+</head>
+<body>
+<!--#include virtual="/partials/sidebar.html" -->
+  <div class="matrix-bg" id="matrix"></div>
+  
+  <div class="container">
+    <div class="message">choose wisely...</div>
+    
+    <div class="pills">
+      <div class="red-pill-container">
+        <div class="pill red-pill" id="red-pill"></div>
+        <div class="pill-label">truth</div>
+      </div>
+      
+      <div class="blue-pill-container">
+        <div class="pill blue-pill" id="blue-pill"></div>
+        <div class="pill-label">bliss</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // matrix background
+    const matrix = document.getElementById('matrix');
+    const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+    
+    for (let i = 0; i < 30; i++) {
+      const column = document.createElement('div');
+      column.className = 'matrix-column';
+      column.style.left = (i * 3) + '%';
+      column.style.animationDuration = (Math.random() * 5 + 5) + 's';
+      column.style.animationDelay = Math.random() * 5 + 's';
+      
+      let text = '';
+      for (let j = 0; j < 50; j++) {
+        text += chars[Math.floor(Math.random() * chars.length)] + '\n';
+      }
+      column.textContent = text;
+      matrix.appendChild(column);
+    }
+
+    // pill choices
+    document.getElementById('red-pill').addEventListener('click', () => {
+      alert('this is a website, surprisingly.');
+      document.cookie = "matrix_red=true; max-age=31536000; path=/";
+    });
+
+    document.getElementById('blue-pill').addEventListener('click', () => {
+      window.location.href = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+    });
+  </script>
+</body>
+</html>

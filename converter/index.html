@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>convert - phluxjr.net</title>
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<!--#include virtual="/partials/sidebar.html" -->
+  <div class="container">
+    <div class="prompt">ffmpeg -i converter.webm -vn -acodec libmp3lame -q:a 2 converter.mp3</div>
+    
+    <h1>file converter</h1>
+    <p>convert stuff between formats</p>
+
+    <div style="margin: 30px 0; border-bottom: 1px solid #333; padding-bottom: 10px;">
+      <button class="tab-btn active" data-tab="text" style="margin-right: 20px;">text</button>
+      <button class="tab-btn" data-tab="media">audio/video</button>
+    </div>
+
+    <!-- text converter -->
+    <div class="converter-panel active" id="text-converter">
+      <div style="margin-bottom: 20px;">
+        <label for="textOperation" style="display: block; margin-bottom: 8px;">operation:</label>
+        <select id="textOperation" style="width: 100%; padding: 10px; background: #0a0a0a; border: 1px solid #333; color: #888; font-family: monospace;">
+          <option value="">-- select operation --</option>
+          <option value="base64-encode">base64 encode</option>
+          <option value="base64-decode">base64 decode</option>
+          <option value="json-pretty">json prettify</option>
+          <option value="json-minify">json minify</option>
+          <option value="url-encode">url encode</option>
+          <option value="url-decode">url decode</option>
+          <option value="hex-encode">hex encode</option>
+          <option value="hex-decode">hex decode</option>
+          <option value="rot13">rot13</option>
+          <option value="reverse">reverse text</option>
+          <option value="uppercase">uppercase</option>
+          <option value="lowercase">lowercase</option>
+          <option value="md5">md5 hash</option>
+          <option value="sha256">sha256 hash</option>
+          <option value="binary-encode">binary encode</option>
+          <option value="binary-decode">binary decode</option>
+          <option value="morse-encode">morse code encode</option>
+          <option value="morse-decode">morse code decode</option>
+          <option value="caesar-encode">caesar cipher (shift 13)</option>
+          <option value="caesar-decode">caesar decipher (shift 13)</option>
+          <option value="html-encode">html entities encode</option>
+          <option value="html-decode">html entities decode</option>
+          <option value="csv-to-json">csv to json</option>
+          <option value="json-to-csv">json to csv</option>
+        </select>
+      </div>
+
+      <label style="display: block; margin-bottom: 8px;">input:</label>
+      <textarea id="textInput" placeholder="enter or paste text here..." style="width: 100%; min-height: 200px; padding: 15px; background: #0a0a0a; border: 1px solid #333; color: #888; font-family: monospace; resize: vertical; margin-bottom: 20px;"></textarea>
+
+      <button id="textConvertBtn" disabled style="width: 100%; padding: 15px; background: #222; border: 1px solid #333; color: #888; font-family: monospace; cursor: pointer; margin-bottom: 20px;">convert</button>
+
+      <div id="textOutputArea" style="display: none;">
+        <label style="display: block; margin: 20px 0 8px 0;">output:</label>
+        <textarea id="textOutput" readonly style="width: 100%; min-height: 200px; padding: 15px; background: #0a0a0a; border: 1px solid #333; color: #888; font-family: monospace; resize: vertical; margin-bottom: 20px;"></textarea>
+        <button id="textDownloadBtn" style="width: 100%; padding: 15px; background: #222; border: 1px solid #333; color: #888; font-family: monospace; cursor: pointer;">download as file</button>
+      </div>
+
+      <div id="textStatus" style="display: none; margin-top: 20px; padding: 15px; background: #0a0a0a; border-left: 3px solid #444;"></div>
+    </div>
+
+    <!-- media converter -->
+    <div class="converter-panel" id="media-converter" style="display: none;">
+      <div id="dropZone" style="border: 2px dashed #333; padding: 60px 20px; text-align: center; margin-bottom: 20px; cursor: pointer; background: #0a0a0a;">
+        <div style="font-size: 48px; margin-bottom: 10px; opacity: 0.3;">📁</div>
+        <div style="margin-bottom: 5px;">drag & drop file here</div>
+        <div style="font-size: 12px; opacity: 0.5;">or click to browse</div>
+      </div>
+      <input type="file" id="fileInput" style="display: none;" accept="audio/*,video/*">
+
+      <div id="fileInfo" style="display: none; background: #0a0a0a; padding: 15px; margin: 20px 0; border-left: 3px solid #444;">
+        <div style="margin-bottom: 5px;">selected file:</div>
+        <div id="fileName"></div>
+        <div id="fileSize" style="font-size: 12px; margin-top: 5px; opacity: 0.6;"></div>
+      </div>
+
+      <div style="margin: 20px 0;">
+        <label for="outputFormat" style="display: block; margin-bottom: 8px;">convert to:</label>
+        <select id="outputFormat" style="width: 100%; padding: 10px; background: #0a0a0a; border: 1px solid #333; color: #888; font-family: monospace;">
+          <option value="">-- select format --</option>
+          <optgroup label="audio">
+            <option value="mp3">mp3</option>
+            <option value="ogg">ogg</option>
+            <option value="wav">wav</option>
+            <option value="flac">flac</option>
+            <option value="m4a">m4a</option>
+          </optgroup>
+          <optgroup label="video">
+            <option value="mp4">mp4</option>
+            <option value="webm">webm</option>
+            <option value="avi">avi</option>
+            <option value="mkv">mkv</option>
+            <option value="mov">mov</option>
+          </optgroup>
+          <optgroup label="extract">
+            <option value="extract-mp3">extract audio (mp3)</option>
+            <option value="extract-ogg">extract audio (ogg)</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <button id="convertBtn" disabled style="width: 100%; padding: 15px; background: #222; border: 1px solid #333; color: #888; font-family: monospace; cursor: pointer; margin-top: 20px;">convert file</button>
+
+      <div id="mediaStatus" style="display: none; margin-top: 20px; padding: 15px; background: #0a0a0a; border-left: 3px solid #444;"></div>
+
+      <p style="margin-top: 30px; padding: 20px; background: #0a0a0a; border: 1px solid #222; font-size: 12px; opacity: 0.6;">
+        <strong>note:</strong> audio/video conversion powered by ffmpeg running on the server.
+      </p>
+    </div>
+
+    <div style="margin-top: 30px;">
+      <a href="/">← back home</a>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <script>
+    // tab switching
+    document.querySelectorAll('.tab-btn').forEach(tab => {
+      tab.addEventListener('click', () => {
+        const tabName = tab.dataset.tab;
+        
+        document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.converter-panel').forEach(c => c.style.display = 'none');
+        
+        tab.classList.add('active');
+        document.getElementById(tabName + '-converter').style.display = 'block';
+      });
+    });
+
+    // text converter
+    const textInput = document.getElementById('textInput');
+    const textOperation = document.getElementById('textOperation');
+    const textConvertBtn = document.getElementById('textConvertBtn');
+    const textOutput = document.getElementById('textOutput');
+    const textOutputArea = document.getElementById('textOutputArea');
+    const textDownloadBtn = document.getElementById('textDownloadBtn');
+    const textStatus = document.getElementById('textStatus');
+
+    textInput.addEventListener('input', updateTextConvertButton);
+    textOperation.addEventListener('change', updateTextConvertButton);
+
+    function updateTextConvertButton() {
+      textConvertBtn.disabled = !(textInput.value.trim() && textOperation.value);
+    }
+
+    textConvertBtn.addEventListener('click', () => {
+      const input = textInput.value;
+      const operation = textOperation.value;
+      
+      try {
+        let result = '';
+        
+        switch(operation) {
+          case 'base64-encode':
+            result = btoa(unescape(encodeURIComponent(input)));
+            break;
+          case 'base64-decode':
+            result = decodeURIComponent(escape(atob(input)));
+            break;
+          case 'json-pretty':
+            result = JSON.stringify(JSON.parse(input), null, 2);
+            break;
+          case 'json-minify':
+            result = JSON.stringify(JSON.parse(input));
+            break;
+          case 'url-encode':
+            result = encodeURIComponent(input);
+            break;
+          case 'url-decode':
+            result = decodeURIComponent(input);
+            break;
+          case 'hex-encode':
+            result = Array.from(input).map(c => c.charCodeAt(0).toString(16).padStart(2, '0')).join('');
+            break;
+          case 'hex-decode':
+            result = input.match(/.{1,2}/g).map(byte => String.fromCharCode(parseInt(byte, 16))).join('');
+            break;
+          case 'rot13':
+            result = input.replace(/[a-zA-Z]/g, c => 
+              String.fromCharCode((c <= 'Z' ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26)
+            );
+            break;
+          case 'reverse':
+            result = input.split('').reverse().join('');
+            break;
+          case 'uppercase':
+            result = input.toUpperCase();
+            break;
+          case 'lowercase':
+            result = input.toLowerCase();
+            break;
+          case 'md5':
+            result = CryptoJS.MD5(input).toString();
+            break;
+          case 'sha256':
+            result = CryptoJS.SHA256(input).toString();
+            break;
+          case 'binary-encode':
+            result = input.split('').map(c => c.charCodeAt(0).toString(2).padStart(8, '0')).join(' ');
+            break;
+          case 'binary-decode':
+            result = input.split(' ').map(b => String.fromCharCode(parseInt(b, 2))).join('');
+            break;
+          case 'morse-encode':
+            const morseMap = {
+              'a': '.-', 'b': '-...', 'c': '-.-.', 'd': '-..', 'e': '.', 'f': '..-.',
+              'g': '--.', 'h': '....', 'i': '..', 'j': '.---', 'k': '-.-', 'l': '.-..',
+              'm': '--', 'n': '-.', 'o': '---', 'p': '.--.', 'q': '--.-', 'r': '.-.',
+              's': '...', 't': '-', 'u': '..-', 'v': '...-', 'w': '.--', 'x': '-..-',
+              'y': '-.--', 'z': '--..', '0': '-----', '1': '.----', '2': '..---',
+              '3': '...--', '4': '....-', '5': '.....', '6': '-....', '7': '--...',
+              '8': '---..', '9': '----.', ' ': '/'
+            };
+            result = input.toLowerCase().split('').map(c => morseMap[c] || c).join(' ');
+            break;
+          case 'morse-decode':
+            const morseMapReverse = {
+              '.-': 'a', '-...': 'b', '-.-.': 'c', '-..': 'd', '.': 'e', '..-.': 'f',
+              '--.': 'g', '....': 'h', '..': 'i', '.---': 'j', '-.-': 'k', '.-..': 'l',
+              '--': 'm', '-.': 'n', '---': 'o', '.--.': 'p', '--.-': 'q', '.-.': 'r',
+              '...': 's', '-': 't', '..-': 'u', '...-': 'v', '.--': 'w', '-..-': 'x',
+              '-.--': 'y', '--..': 'z', '-----': '0', '.----': '1', '..---': '2',
+              '...--': '3', '....-': '4', '.....': '5', '-....': '6', '--...': '7',
+              '---..': '8', '----.': '9', '/': ' '
+            };
+            result = input.split(' ').map(m => morseMapReverse[m] || '').join('');
+            break;
+          case 'caesar-encode':
+            result = input.replace(/[a-zA-Z]/g, c => 
+              String.fromCharCode(((c.charCodeAt(0) - (c <= 'Z' ? 65 : 97) + 13) % 26) + (c <= 'Z' ? 65 : 97))
+            );
+            break;
+          case 'caesar-decode':
+            result = input.replace(/[a-zA-Z]/g, c => 
+              String.fromCharCode(((c.charCodeAt(0) - (c <= 'Z' ? 65 : 97) - 13 + 26) % 26) + (c <= 'Z' ? 65 : 97))
+            );
+            break;
+          case 'html-encode':
+            result = input.replace(/[&<>"']/g, c => ({
+              '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[c]));
+            break;
+          case 'html-decode':
+            const txt = document.createElement('textarea');
+            txt.innerHTML = input;
+            result = txt.value;
+            break;
+          case 'csv-to-json':
+            const lines = input.trim().split('\n');
+            const headers = lines[0].split(',').map(h => h.trim());
+            const data = lines.slice(1).map(line => {
+              const values = line.split(',').map(v => v.trim());
+              const obj = {};
+              headers.forEach((h, i) => obj[h] = values[i] || '');
+              return obj;
+            });
+            result = JSON.stringify(data, null, 2);
+            break;
+          case 'json-to-csv':
+            const json = JSON.parse(input);
+            const array = Array.isArray(json) ? json : [json];
+            if (array.length === 0) {
+              result = '';
+              break;
+            }
+            const keys = Object.keys(array[0]);
+            const csvHeaders = keys.join(',');
+            const csvRows = array.map(obj => keys.map(k => obj[k] || '').join(','));
+            result = [csvHeaders, ...csvRows].join('\n');
+            break;
+        }
+        
+        textOutput.value = result;
+        textOutputArea.style.display = 'block';
+        textStatus.style.display = 'block';
+        textStatus.style.borderLeftColor = '#4a4';
+        textStatus.style.color = '#4a4';
+        textStatus.textContent = 'conversion successful!';
+      } catch (error) {
+        textStatus.style.display = 'block';
+        textStatus.style.borderLeftColor = '#a44';
+        textStatus.style.color = '#a44';
+        textStatus.textContent = 'error: ' + error.message;
+        textOutputArea.style.display = 'none';
+      }
+    });
+
+    textDownloadBtn.addEventListener('click', () => {
+      const content = textOutput.value;
+      const operation = textOperation.value;
+      const blob = new Blob([content], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'converted-' + operation + '.txt';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    // media converter
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const fileInfo = document.getElementById('fileInfo');
+    const fileName = document.getElementById('fileName');
+    const fileSize = document.getElementById('fileSize');
+    const outputFormat = document.getElementById('outputFormat');
+    const convertBtn = document.getElementById('convertBtn');
+    const mediaStatus = document.getElementById('mediaStatus');
+
+    let selectedFile = null;
+
+    dropZone.addEventListener('click', () => {
+      fileInput.click();
+    });
+
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.style.borderColor = '#888';
+      dropZone.style.background = '#1a1a1a';
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.style.borderColor = '#333';
+      dropZone.style.background = '#0a0a0a';
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.style.borderColor = '#333';
+      dropZone.style.background = '#0a0a0a';
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        handleFile(files[0]);
+      }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) {
+        handleFile(e.target.files[0]);
+      }
+    });
+
+    outputFormat.addEventListener('change', updateConvertButton);
+
+    function handleFile(file) {
+      selectedFile = file;
+      fileName.textContent = file.name;
+      fileSize.textContent = formatFileSize(file.size);
+      fileInfo.style.display = 'block';
+      updateConvertButton();
+      mediaStatus.style.display = 'none';
+    }
+
+    function updateConvertButton() {
+      convertBtn.disabled = !(selectedFile && outputFormat.value);
+    }
+
+    function formatFileSize(bytes) {
+      if (bytes === 0) return '0 bytes';
+      const k = 1024;
+      const sizes = ['bytes', 'kb', 'mb', 'gb'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+    }
+
+    convertBtn.addEventListener('click', async () => {
+      if (!selectedFile || !outputFormat.value) return;
+      
+      convertBtn.disabled = true;
+      mediaStatus.style.display = 'block';
+      mediaStatus.textContent = 'converting... this may take a moment';
+      
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+      formData.append('format', outputFormat.value);
+      
+      try {
+        const response = await fetch('/api/convert', {
+          method: 'POST',
+          body: formData
+        });
+        
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || 'conversion failed');
+        }
+        
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'converted.' + outputFormat.value.replace('extract-', '');
+        a.click();
+        URL.revokeObjectURL(url);
+        
+        mediaStatus.style.borderLeftColor = '#4a4';
+        mediaStatus.style.color = '#4a4';
+        mediaStatus.textContent = 'conversion complete! file downloaded.';
+      } catch (error) {
+        mediaStatus.style.borderLeftColor = '#a44';
+        mediaStatus.style.color = '#a44';
+        mediaStatus.textContent = 'error: ' + error.message;
+      } finally {
+        convertBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

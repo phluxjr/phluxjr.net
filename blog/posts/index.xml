@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on phluxjr blog</title>
+    <link>https://phluxjr.net/blog/posts/</link>
+    <description>Recent content in Posts on phluxjr blog</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 04 Mar 2026 04:03:17 +0000</lastBuildDate>
+    <atom:link href="https://phluxjr.net/blog/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>confy pages</title>
+      <link>https://phluxjr.net/blog/confy-pages/</link>
+      <pubDate>Wed, 04 Mar 2026 04:03:17 +0000</pubDate>
+      <guid>https://phluxjr.net/blog/confy-pages/</guid>
+      <description>&lt;p&gt;just revamped all of the confy pages + added a downloads and thanks page for no reason&#xA;took a bit, but i&amp;rsquo;m proud of it&#xA;oh yeah, there&amp;rsquo;s also a compiled binary on the downloads page. for all you folk who don&amp;rsquo;t feel like manually installing a .py file :)&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>smoke alarm</title>
+      <link>https://phluxjr.net/blog/smoke-alarm/</link>
+      <pubDate>Thu, 05 Feb 2026 03:00:00 -0600</pubDate>
+      <guid>https://phluxjr.net/blog/smoke-alarm/</guid>
+      <description>&lt;p&gt;imagine a smoke alarm that instead of beeping hacks up a lung&lt;/p&gt;&#xA;&lt;p&gt;like you&amp;rsquo;re evacuating and it&amp;rsquo;s just violently coughing above the kitchen oven&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>testing newpost command</title>
+      <link>https://phluxjr.net/blog/testing-newpost-command/</link>
+      <pubDate>Thu, 05 Feb 2026 00:14:09 -0500</pubDate>
+      <guid>https://phluxjr.net/blog/testing-newpost-command/</guid>
+      <description>&lt;p&gt;yeah it works! this is my blog post content.&lt;/p&gt;&#xA;&lt;p&gt;i can write whatever i want here. markdown supported:&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;lists work&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;bold text&lt;/strong&gt;&lt;/li&gt;&#xA;&lt;li&gt;&lt;em&gt;italic text&lt;/em&gt;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h2 id=&#34;subheadings-too&#34;&gt;subheadings too&lt;/h2&gt;&#xA;&lt;p&gt;pretty cool&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

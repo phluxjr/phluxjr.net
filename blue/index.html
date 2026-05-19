@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>blue - phluxjr.net</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: rgb(0, 154, 206);
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .album-cover {
+      opacity: 0;
+      max-width: 500px;
+      width: 80%;
+      transition: opacity 3s ease-in;
+    }
+
+    .album-cover.fade-in {
+      opacity: 1;
+    }
+
+    audio {
+      position: absolute;
+      bottom: 20px;
+      opacity: 0;
+      transition: opacity 3s ease-in;
+    }
+
+    audio.fade-in {
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body>
+<!--#include virtual="/partials/sidebar.html" -->
+  <img class="album-cover" id="album" 
+       src="blue-album.png" 
+       alt="weezer blue album">
+  
+  <audio id="riff" src="buddy-holly-riff.mp3"></audio>
+
+  <script>
+    setTimeout(() => {
+      const album = document.getElementById('album');
+      const riff = document.getElementById('riff');
+      
+      album.classList.add('fade-in');
+      riff.play();
+    }, 10000);
+  </script>
+</body>
+</html>

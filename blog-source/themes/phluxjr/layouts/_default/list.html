@@ -1,0 +1,23 @@
+{{ define "main" }}
+<div class="container">
+    <div class="prompt">ls -la ~/blog/</div>
+    
+    <h1>blog posts</h1>
+    
+    <div style="margin: 20px 0;">
+        {{ range .Site.RegularPages }}
+        <div style="margin: 15px 0; padding: 10px 0; border-bottom: 1px solid #333;">
+            <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+            <span style="opacity: 0.6; margin-left: 10px;">{{ .Date.Format "2006-01-02" }}</span>
+        </div>
+        {{ end }}
+    </div>
+    
+    <div class="footer">
+        <p><a href="/">← back to home</a></p>
+        <p>// snack machine status: out of order</p>
+        <p>// please send snaks</p>
+        <p style="margin-top: 10px;">system uptime: <a href="/blue" style="color: rgb(0, 154, 206); text-decoration: none;"><style>a[href="/blue"]::before, a[href="/blue"]::after { content: none !important; }</style>forever</a><span class="blink">_</span></p>
+    </div>
+</div>
+{{ end }}

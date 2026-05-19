@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>*** THE BUTTON *** click here!!!</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Relief:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000080;
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGElEQVQYlWNgYGD4z4AHMDMQB1iGFAoA+wMCBKNRJfQAAAAASUVORK5CYII=');
+            color: #ffff00;
+            font-family: 'Comic Relief', 'Comic Sans MS', 'Chalkboard SE', cursive, sans-serif;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #c0c0c0;
+            border: 4px outset #ffffff;
+            padding: 0;
+            box-shadow: 5px 5px 0px #000000;
+        }
+
+        .title-bar {
+            background: linear-gradient(180deg, #000080, #1084d0);
+            color: white;
+            padding: 3px 5px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .title-bar-text {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .title-bar-controls {
+            display: flex;
+            gap: 2px;
+        }
+
+        .title-bar-button {
+            width: 16px;
+            height: 14px;
+            border: 1px outset white;
+            background: #c0c0c0;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .window-body {
+            padding: 20px;
+            background: #c0c0c0;
+            color: #000000;
+        }
+
+        marquee {
+            background: #ffff00;
+            color: #ff0000;
+            font-weight: bold;
+            font-size: 1.5em;
+            padding: 10px;
+            border: 3px ridge #808080;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #ff00ff;
+            font-size: 3em;
+            text-shadow: 3px 3px #00ffff;
+            margin: 20px 0;
+            animation: rainbow 3s infinite;
+        }
+
+        @keyframes rainbow {
+            0% { color: #ff0000; }
+            16% { color: #ff8800; }
+            33% { color: #ffff00; }
+            50% { color: #00ff00; }
+            66% { color: #0088ff; }
+            83% { color: #8800ff; }
+            100% { color: #ff0000; }
+        }
+
+        .separator {
+            height: 20px;
+            background: url('data:image/gif;base64,R0lGODlhFAAUAKEAAP8AAP///wAAAAAAACH5BAEAAAIALAAAAAAUABQAAAIklI+py+0Po5y02ouz3rz7D4biSJbmiabqyrbuC8fyTNf2jVcFADs=');
+            margin: 20px 0;
+        }
+
+        .counter-section {
+            text-align: center;
+            background: #ffffff;
+            border: 3px inset #808080;
+            padding: 30px;
+            margin: 20px 0;
+        }
+
+        .counter-label {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 10px;
+        }
+
+        .counter {
+            font-size: 5em;
+            font-weight: bold;
+            color: #ff0000;
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            text-shadow: 3px 3px 0px #000000;
+            margin: 20px 0;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .button-container {
+            position: relative;
+            display: inline-block;
+            margin: 30px 0;
+        }
+
+        .click-button {
+            background: linear-gradient(180deg, #ff0000, #cc0000);
+            border: 4px outset #ffffff;
+            width: 250px;
+            height: 100px;
+            font-size: 2em;
+            font-weight: bold;
+            color: #ffff00;
+            cursor: pointer;
+            font-family: 'Comic Relief', 'Comic Sans MS', cursive, sans-serif;
+            text-shadow: 2px 2px #000000;
+            box-shadow: 5px 5px 0px #000000;
+            position: relative;
+        }
+
+        .click-button:hover {
+            background: linear-gradient(180deg, #ff3333, #ff0000);
+        }
+
+        .click-button:active {
+            border-style: inset;
+            transform: translate(2px, 2px);
+            box-shadow: 3px 3px 0px #000000;
+        }
+
+        .plus-one {
+            position: absolute;
+            font-size: 3em;
+            font-weight: bold;
+            pointer-events: none;
+            z-index: 100;
+            font-family: 'Impact', sans-serif;
+        }
+
+        .plus-one.mine {
+            color: #ff0000;
+            text-shadow: 
+                2px 2px 0 #000,
+                -2px -2px 0 #000,
+                2px -2px 0 #000,
+                -2px 2px 0 #000;
+        }
+
+        .plus-one.theirs {
+            color: #0000ff;
+            text-shadow: 
+                2px 2px 0 #000,
+                -2px -2px 0 #000,
+                2px -2px 0 #000,
+                -2px 2px 0 #000;
+        }
+
+        @keyframes float-up {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-150px) scale(2) rotate(360deg);
+            }
+        }
+
+        .plus-one {
+            animation: float-up 1.5s ease-out forwards;
+        }
+
+        .status {
+            background: #000000;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            padding: 10px;
+            border: 2px solid #00ff00;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .blink {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        .awards {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .award {
+            background: #ffffff;
+            border: 2px solid #000000;
+            padding: 5px;
+            font-size: 0.8em;
+            text-align: center;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: #000080;
+            color: #ffff00;
+            border: 3px ridge #ffffff;
+        }
+
+        .hit-counter {
+            display: inline-flex;
+            gap: 2px;
+            background: #000000;
+            padding: 5px;
+            border: 2px inset #808080;
+        }
+
+        .digit {
+            width: 20px;
+            height: 30px;
+            background: #ff0000;
+            color: #000000;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #000000;
+            font-family: 'Courier New', monospace;
+        }
+
+        img.gif {
+            image-rendering: pixelated;
+        }
+
+        .center-text {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<!--#include virtual="/partials/sidebar.html" -->
+    <div class="container">
+        <div class="title-bar">
+            <div class="title-bar-text">THE BUTTON - Netscape Navigator</div>
+            <div class="title-bar-controls">
+                <div class="title-bar-button">_</div>
+                <div class="title-bar-button">[]</div>
+                <div class="title-bar-button">X</div>
+            </div>
+        </div>
+
+        <div class="window-body">
+            <marquee behavior="scroll" direction="left">
+                WELCOME TO THE BUTTON | CLICK IT NOW!!! | TELL YOUR FRIENDS!!! |
+            </marquee>
+
+            <h1>THE BUTTON</h1>
+
+            <div class="separator"></div>
+
+            <div class="counter-section">
+                <div class="counter-label">
+                    TOTAL CLICKS BY EVERYONE
+                </div>
+                <div class="counter" id="counter">0</div>
+                <div class="hit-counter" id="hit-counter"></div>
+            </div>
+
+            <div class="center-text">
+                <div class="button-container" id="button-container">
+                    <button class="click-button" id="click-button">
+                        CLICK ME!!!
+                    </button>
+                </div>
+            </div>
+
+            <div class="status" id="status">
+                <span class="blink">o</span> CONNECTING TO THE MAINFRAME...
+            </div>
+
+            <div class="separator"></div>
+
+            <div class="awards">
+                <div class="award">
+                    <strong>GEOCITIES</strong><br>
+                    COOL SITE!<br>
+                    *****
+                </div>
+                <div class="award">
+                    <strong>BEST VIEWED IN</strong><br>
+                    NETSCAPE<br>
+                    800x600
+                </div>
+                <div class="award">
+                    <strong>THIS SITE IS</strong><br>
+                    JAVASCRIPT<br>
+                    ENABLED!
+                </div>
+            </div>
+
+            <div class="footer">
+                <p><strong>WARNING</strong></p>
+                <p>CLICKING THIS BUTTON MAY CAUSE:</p>
+                <p>o UNCONTROLLABLE JOY o INTERNET FAME o CARPAL TUNNEL</p>
+                <p style="margin-top: 10px;">
+                    <span class="blink">@</span> YOU ARE VISITOR NUMBER <span id="visitor-count">???</span> <span class="blink">@</span>
+                </p>
+                <p style="margin-top: 10px; font-size: 0.8em;">
+                    (c) 2026 phluxjr.net - ALL RIGHTS RESERVED<br>
+                    <span class="blink">*</span> POWERED BY NGINX & PURE VIBES <span class="blink">*</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api/clicker/index.cgi';
+        let currentCount = 0;
+        let isMyClick = false;
+
+        const counterEl = document.getElementById('counter');
+        const hitCounterEl = document.getElementById('hit-counter');
+        const buttonEl = document.getElementById('click-button');
+        const buttonContainer = document.getElementById('button-container');
+        const statusEl = document.getElementById('status');
+        const visitorCountEl = document.getElementById('visitor-count');
+
+        // Format number with commas
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        // Update hit counter display (old school digit style)
+        function updateHitCounter(num) {
+            const digits = num.toString().padStart(8, '0').split('');
+            hitCounterEl.innerHTML = digits.map(d => 
+                `<div class="digit">${d}</div>`
+            ).join('');
+        }
+
+        // Create floating +1 animation
+        function createPlusOne(isMine) {
+            const plusOne = document.createElement('div');
+            plusOne.className = `plus-one ${isMine ? 'mine' : 'theirs'}`;
+            plusOne.textContent = '+1';
+            
+            // Random position around the button
+            const buttonRect = buttonEl.getBoundingClientRect();
+            const containerRect = buttonContainer.getBoundingClientRect();
+            
+            const angle = Math.random() * Math.PI * 2;
+            const distance = 150;
+            const x = Math.cos(angle) * distance;
+            const y = Math.sin(angle) * distance;
+            
+            plusOne.style.left = `${buttonRect.width / 2 + x}px`;
+            plusOne.style.top = `${buttonRect.height / 2 + y}px`;
+            
+            buttonContainer.appendChild(plusOne);
+            
+            // Remove after animation
+            setTimeout(() => plusOne.remove(), 1500);
+        }
+
+        // Update counter display
+        function updateCounter(newCount, triggerAnimation = false, isMine = false) {
+            if (newCount !== currentCount) {
+                currentCount = newCount;
+                counterEl.textContent = formatNumber(currentCount);
+                updateHitCounter(currentCount);
+                visitorCountEl.textContent = formatNumber(currentCount);
+                
+                if (triggerAnimation) {
+                    createPlusOne(isMine);
+                }
+            }
+        }
+
+        // Click handler
+        async function handleClick() {
+            isMyClick = true;
+            
+            // Visual feedback
+            buttonEl.textContent = 'CLICKING!!!';
+            
+            try {
+                const response = await fetch(`${API_URL}?action=increment`, {
+                    method: 'GET'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    updateCounter(data.count, true, true);
+                    buttonEl.textContent = 'CLICK ME!!!';
+                }
+            } catch (error) {
+                console.error('Click failed:', error);
+                statusEl.innerHTML = '<span class="blink">!</span> ERROR: COULD NOT CONNECT TO MAINFRAME <span class="blink">!</span>';
+                buttonEl.textContent = 'CLICK ME!!!';
+            }
+            
+            isMyClick = false;
+        }
+
+        // Poll for updates
+        async function pollUpdates() {
+            try {
+                const response = await fetch(`${API_URL}?action=get`);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // If count increased and it wasn't our click, show blue +1
+                    if (data.count > currentCount && !isMyClick) {
+                        updateCounter(data.count, true, false);
+                    } else {
+                        updateCounter(data.count, false);
+                    }
+                    
+                    statusEl.innerHTML = '<span class="blink">o</span> CONNECTED TO THE MAINFRAME - MONITORING GLOBAL CLICKS';
+                } else {
+                    statusEl.innerHTML = '<span class="blink">!</span> CONNECTION LOST - RETRYING...';
+                }
+            } catch (error) {
+                console.error('Poll failed:', error);
+                statusEl.innerHTML = '<span class="blink">!</span> DISCONNECTED FROM MAINFRAME';
+            }
+        }
+
+        // Initial load
+        pollUpdates();
+
+        // Poll every 500ms
+        setInterval(pollUpdates, 500);
+
+        // Button click event
+        buttonEl.addEventListener('click', handleClick);
+    </script>
+</body>
+</html>

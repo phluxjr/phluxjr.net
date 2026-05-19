@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>markdown writer ~ phluxjr.net</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+
+    /* catppuccin mocha */
+    :root {
+      --base:    #1e1e2e;
+      --mantle:  #181825;
+      --crust:   #11111b;
+      --surface0:#313244;
+      --surface1:#45475a;
+      --surface2:#585b70;
+      --text:    #cdd6f4;
+      --subtext0:#a6adc8;
+      --subtext1:#bac2de;
+      --lavender:#b4befe;
+      --blue:    #89b4fa;
+      --sky:     #89dceb;
+      --mauve:   #cba6f7;
+      --pink:    #f5c2e7;
+      --red:     #f38ba8;
+      --green:   #a6e3a1;
+      --yellow:  #f9e2af;
+    }
+
+    body {
+      background: var(--base);
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* header */
+    .header {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--surface0);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .header-title {
+      color: var(--pink);
+      font-size: 1.1em;
+      text-shadow: 0 0 10px rgba(245,194,231,0.4);
+    }
+
+    .header-title::before {
+      content: "phluxjr@arch:~$ ";
+      color: var(--lavender);
+    }
+
+    .header-right {
+      margin-left: auto;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* buttons */
+    button {
+      background: var(--surface0);
+      border: 1px solid var(--surface1);
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8em;
+      padding: 6px 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-radius: 2px;
+    }
+
+    button:hover {
+      background: var(--surface1);
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    button.active {
+      background: var(--surface1);
+      border-color: var(--pink);
+      color: var(--pink);
+    }
+
+    .btn-green:hover  { border-color: var(--green);  color: var(--green);  }
+    .btn-yellow:hover { border-color: var(--yellow); color: var(--yellow); }
+    .btn-sky:hover    { border-color: var(--sky);    color: var(--sky);    }
+    .btn-mauve:hover  { border-color: var(--mauve);  color: var(--mauve);  }
+
+    /* toolbar */
+    .toolbar {
+      padding: 8px 24px;
+      border-bottom: 1px solid var(--surface0);
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      background: var(--mantle);
+    }
+
+    .toolbar button {
+      padding: 4px 10px;
+      font-size: 0.78em;
+      min-width: 32px;
+    }
+
+    .toolbar-sep {
+      width: 1px;
+      background: var(--surface1);
+      margin: 2px 4px;
+    }
+
+    /* stats bar */
+    .stats {
+      padding: 4px 24px;
+      font-size: 0.72em;
+      color: var(--subtext0);
+      background: var(--crust);
+      border-bottom: 1px solid var(--surface0);
+      display: flex;
+      gap: 20px;
+    }
+
+    .stats span { color: var(--subtext1); }
+
+    /* main area */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .pane {
+      flex: 1;
+      overflow: auto;
+      display: none;
+    }
+
+    .pane.visible { display: flex; flex-direction: column; }
+
+    /* editor */
+    #editor {
+      width: 100%;
+      flex: 1;
+      background: var(--mantle);
+      color: var(--text);
+      border: none;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.95em;
+      line-height: 1.7;
+      padding: 24px;
+      resize: none;
+      outline: none;
+      tab-size: 2;
+    }
+
+    #editor::selection { background: var(--surface1); }
+
+    /* preview */
+    #preview {
+      padding: 32px;
+      max-width: 860px;
+      width: 100%;
+      margin: 0 auto;
+      line-height: 1.8;
+    }
+
+    #preview h1, #preview h2, #preview h3,
+    #preview h4, #preview h5, #preview h6 {
+      color: var(--pink);
+      margin: 1.2em 0 0.5em;
+      text-shadow: 0 0 8px rgba(245,194,231,0.3);
+    }
+    #preview h1 { font-size: 1.8em; border-bottom: 1px solid var(--surface0); padding-bottom: 6px; }
+    #preview h2 { font-size: 1.4em; border-bottom: 1px solid var(--surface0); padding-bottom: 4px; }
+    #preview h3 { font-size: 1.15em; color: var(--mauve); }
+
+    #preview p  { margin: 0.7em 0; }
+
+    #preview a  { color: var(--blue); text-decoration: none; }
+    #preview a::before { content: "[ "; color: var(--mauve); }
+    #preview a::after  { content: " ]"; color: var(--mauve); }
+    #preview a:hover   { color: var(--sky); text-shadow: 0 0 8px rgba(137,180,250,0.6); }
+
+    #preview code {
+      background: var(--surface0);
+      color: var(--green);
+      padding: 2px 6px;
+      border-radius: 2px;
+      font-size: 0.88em;
+    }
+
+    #preview pre {
+      background: var(--mantle);
+      border: 1px solid var(--surface0);
+      border-left: 3px solid var(--mauve);
+      padding: 16px;
+      overflow-x: auto;
+      margin: 1em 0;
+      border-radius: 2px;
+    }
+
+    #preview pre code {
+      background: none;
+      padding: 0;
+      color: var(--text);
+      font-size: 0.9em;
+    }
+
+    #preview blockquote {
+      border-left: 3px solid var(--lavender);
+      margin: 1em 0;
+      padding: 8px 16px;
+      color: var(--subtext1);
+      background: var(--mantle);
+    }
+
+    #preview ul, #preview ol { padding-left: 1.5em; margin: 0.7em 0; }
+    #preview li { margin: 0.3em 0; }
+    #preview li::marker { color: var(--mauve); }
+
+    #preview table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 1em 0;
+    }
+
+    #preview th, #preview td {
+      border: 1px solid var(--surface1);
+      padding: 8px 12px;
+      text-align: left;
+    }
+
+    #preview th {
+      background: var(--surface0);
+      color: var(--lavender);
+    }
+
+    #preview tr:nth-child(even) { background: var(--mantle); }
+
+    #preview hr {
+      border: none;
+      border-top: 1px solid var(--surface1);
+      margin: 1.5em 0;
+    }
+
+    #preview img {
+      max-width: 100%;
+      border: 1px solid var(--surface1);
+    }
+
+    /* toast */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--surface0);
+      border: 1px solid var(--green);
+      color: var(--green);
+      padding: 8px 16px;
+      font-size: 0.85em;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    #toast.show { opacity: 1; }
+
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--mantle); }
+    ::-webkit-scrollbar-thumb { background: var(--surface1); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--surface2); }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <span class="header-title">markdown writer</span>
+  <div class="header-right">
+    <button id="toggleBtn" class="active" onclick="toggleView()">[ editor ]</button>
+    <button class="btn-sky" onclick="copyHTML()">copy html</button>
+    <button class="btn-green" onclick="downloadMD()">save .md</button>
+    <button class="btn-yellow" onclick="downloadHTML()">save .html</button>
+  </div>
+</div>
+
+<div class="toolbar" id="toolbar">
+  <button title="bold" onclick="wrap('**','**')"><b>B</b></button>
+  <button title="italic" onclick="wrap('*','*')"><i>i</i></button>
+  <button title="strikethrough" onclick="wrap('~~','~~')">~~s~~</button>
+  <button title="inline code" onclick="wrap('`','`')">`c`</button>
+  <div class="toolbar-sep"></div>
+  <button title="h1" onclick="linePrefix('# ')">h1</button>
+  <button title="h2" onclick="linePrefix('## ')">h2</button>
+  <button title="h3" onclick="linePrefix('### ')">h3</button>
+  <div class="toolbar-sep"></div>
+  <button title="unordered list" onclick="linePrefix('- ')">ul</button>
+  <button title="ordered list" onclick="linePrefix('1. ')">ol</button>
+  <button title="blockquote" onclick="linePrefix('> ')">bq</button>
+  <button title="code block" onclick="wrapBlock('```\n','\n```')">```</button>
+  <div class="toolbar-sep"></div>
+  <button title="link" onclick="insertLink()">link</button>
+  <button title="image" onclick="insertImage()">img</button>
+  <button title="horizontal rule" onclick="insertHR()">hr</button>
+  <button title="table" onclick="insertTable()">tbl</button>
+</div>
+
+<div class="stats">
+  <span>words: <span id="wc">0</span></span>
+  <span>chars: <span id="cc">0</span></span>
+  <span>lines: <span id="lc">0</span></span>
+</div>
+
+<div class="main">
+  <div class="pane visible" id="editorPane">
+    <textarea id="editor" spellcheck="false" placeholder="# start writing...
+
+your markdown goes here. use the toolbar above or just type :)"></textarea>
+  </div>
+  <div class="pane" id="previewPane">
+    <div id="preview"></div>
+  </div>
+</div>
+
+<div id="toast">copied!</div>
+
+<script>
+  const editor = document.getElementById('editor');
+  const preview = document.getElementById('preview');
+  const editorPane = document.getElementById('editorPane');
+  const previewPane = document.getElementById('previewPane');
+  const toggleBtn = document.getElementById('toggleBtn');
+  const toolbar = document.getElementById('toolbar');
+  const toast = document.getElementById('toast');
+  let isEditor = true;
+
+  marked.setOptions({ breaks: true, gfm: true });
+
+  function updatePreview() {
+    preview.innerHTML = marked.parse(editor.value || '');
+    updateStats();
+  }
+
+  function updateStats() {
+    const val = editor.value;
+    document.getElementById('cc').textContent = val.length;
+    document.getElementById('wc').textContent = val.trim() ? val.trim().split(/\s+/).length : 0;
+    document.getElementById('lc').textContent = val ? val.split('\n').length : 0;
+  }
+
+  editor.addEventListener('input', updatePreview);
+
+  // tab support
+  editor.addEventListener('keydown', e => {
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const s = editor.selectionStart, end = editor.selectionEnd;
+      editor.value = editor.value.substring(0, s) + '  ' + editor.value.substring(end);
+      editor.selectionStart = editor.selectionEnd = s + 2;
+      updatePreview();
+    }
+  });
+
+  function toggleView() {
+    isEditor = !isEditor;
+    if (isEditor) {
+      editorPane.classList.add('visible');
+      previewPane.classList.remove('visible');
+      toggleBtn.textContent = '[ editor ]';
+      toggleBtn.classList.add('active');
+      toolbar.style.display = '';
+    } else {
+      updatePreview();
+      previewPane.classList.add('visible');
+      editorPane.classList.remove('visible');
+      toggleBtn.textContent = '[ preview ]';
+      toggleBtn.classList.remove('active');
+      toolbar.style.display = 'none';
+    }
+  }
+
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2000);
+  }
+
+  function copyHTML() {
+    const html = marked.parse(editor.value || '');
+    navigator.clipboard.writeText(html).then(() => showToast('html copied! (ﾉ´ヮ\`)ﾉ'));
+  }
+
+  function downloadMD() {
+    const blob = new Blob([editor.value], { type: 'text/markdown' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'document.md';
+    a.click();
+    showToast('saved .md!');
+  }
+
+  function downloadHTML() {
+    const body = marked.parse(editor.value || '');
+    const full = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>document</title>
+<style>
+  body { background:#1e1e2e; color:#cdd6f4; font-family:'JetBrains Mono',monospace; max-width:800px; margin:40px auto; padding:0 20px; line-height:1.8; }
+  h1,h2,h3,h4,h5,h6 { color:#f5c2e7; margin:1.2em 0 0.5em; }
+  h1,h2 { border-bottom:1px solid #313244; padding-bottom:6px; }
+  a { color:#89b4fa; }
+  code { background:#313244; color:#a6e3a1; padding:2px 6px; }
+  pre { background:#181825; border-left:3px solid #cba6f7; padding:16px; overflow-x:auto; }
+  pre code { background:none; color:#cdd6f4; }
+  blockquote { border-left:3px solid #b4befe; padding:8px 16px; color:#bac2de; background:#181825; }
+  table { border-collapse:collapse; width:100%; }
+  th,td { border:1px solid #45475a; padding:8px 12px; }
+  th { background:#313244; color:#b4befe; }
+  tr:nth-child(even) { background:#181825; }
+  hr { border:none; border-top:1px solid #45475a; }
+</style>
+</head>
+<body>
+</html>`;
+    const blob = new Blob([full], { type: 'text/html' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'document.html';
+    a.click();
+    showToast('saved .html!');
+  }
+
+  // toolbar helpers
+  function getSelection() {
+    return { start: editor.selectionStart, end: editor.selectionEnd, text: editor.value.substring(editor.selectionStart, editor.selectionEnd) };
+  }
+
+  function insertAt(start, end, text) {
+    editor.focus();
+    editor.value = editor.value.substring(0, start) + text + editor.value.substring(end);
+    updatePreview();
+  }
+
+  function wrap(before, after) {
+    const { start, end, text } = getSelection();
+    const placeholder = text || 'text';
+    insertAt(start, end, before + placeholder + after);
+    editor.selectionStart = start + before.length;
+    editor.selectionEnd = start + before.length + placeholder.length;
+  }
+
+  function wrapBlock(before, after) {
+    const { start, end, text } = getSelection();
+    const placeholder = text || 'code here';
+    insertAt(start, end, before + placeholder + after);
+    editor.selectionStart = start + before.length;
+    editor.selectionEnd = start + before.length + placeholder.length;
+  }
+
+  function linePrefix(prefix) {
+    const { start } = getSelection();
+    const lineStart = editor.value.lastIndexOf('\n', start - 1) + 1;
+    insertAt(lineStart, lineStart, prefix);
+    editor.selectionStart = editor.selectionEnd = start + prefix.length;
+  }
+
+  function insertLink() {
+    const { start, end, text } = getSelection();
+    const label = text || 'link text';
+    insertAt(start, end, `[${label}](url)`);
+    editor.selectionStart = start + label.length + 3;
+    editor.selectionEnd = start + label.length + 6;
+  }
+
+  function insertImage() {
+    const { start, end } = getSelection();
+    insertAt(start, end, '![alt text](image-url)');
+  }
+
+  function insertHR() {
+    const { start, end } = getSelection();
+    insertAt(start, end, '\n\n---\n\n');
+  }
+
+  function insertTable() {
+    const { start, end } = getSelection();
+    insertAt(start, end, '\n| header | header |\n| --- | --- |\n| cell | cell |\n| cell | cell |\n');
+  }
+
+  updateStats();
+</script>
+</body>
+</html>

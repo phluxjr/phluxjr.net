@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="pzFIijNoAebV1Dfb6vakG4oUAJ4BY941TYd1lumMMxQ">
+    <title>phluxjr.net</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+
+        /* Only needed so transform doesn't affect layout */
+        .corrupt-link {
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<script>
+let typed = '';
+const trigger = 'hamburger';
+
+document.addEventListener('keypress', (e) => {
+  typed += e.key.toLowerCase();
+  
+  if (typed.includes(trigger)) {
+    window.location.href = 'https://phluxjr23.neocities.org/';
+  }
+  
+  if (typed.length > trigger.length) {
+    typed = typed.slice(-trigger.length);
+  }
+});
+
+// cookie helper
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+  return null;
+}
+
+// show achievements link if unlocked
+window.addEventListener('DOMContentLoaded', () => {
+  const hasAchievement =
+    getCookie('peaceful_achievement') === 'true' ||
+    getCookie('hacker_achievement') === 'true' ||
+    getCookie('secret_1') === 'true' ||
+    getCookie('secret_2') === 'true' ||
+    getCookie('secret_3') === 'true';
+  
+  if (hasAchievement) {
+    document.getElementById('achievements-link').style.display = 'block';
+  }
+});
+
+// F12 achievement
+let f12Unlocked = false;
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'F12' && !f12Unlocked) {
+    f12Unlocked = true;
+    document.cookie = "hacker_achievement=true; max-age=31536000; path=/";
+    setTimeout(() => {
+      alert('achievement unlocked: hacker');
+    }, 100);
+  }
+});
+
+</script>
+
+<body>
+<!--#include virtual="/partials/sidebar.html" -->
+<div class="container">
+    <div class="prompt">cat welcome.txt</div>
+    
+    <h1>welcome to phluxjr.net</h1>
+
+    <div class="links">
+        <div class="link-item">
+            <a href="/about">about</a> - the site stuff
+        </div>
+	<div class="link-item">
+		<a href="/assets">assets</a> - site assets
+	</div>
+        <div class="link-item">
+            <a href="/projects">projects</a> - stuff i made
+        </div>
+        <div class="link-item">
+            <a href="/blog">blog</a> - random thoughts
+        </div>
+        <div class="link-item">
+            <a href="https://github.com/phluxjr23" target="_blank">github</a> - my code
+        </div>
+        <div class="link-item">
+            <a href="/confy">confy</a> - thing i made. config manager
+        </div>
+        <div class="link-item">
+            <a href="/doom">DOOM</a> - rip and tear within your browser!
+        </div>
+        <div class="link-item" id="achievements-link" style="display: none;">
+            <a href="/achievements">achievements</a> - your trophies
+        </div>
+        <div class="link-item">
+            <a href="/hints">hints</a> - hints for secrets
+        </div>
+        <div class="link-item">
+            <a href="/startpage">startpage</a> - a simple browser homepage
+        </div>
+        <div class="link-item">
+            <a href="/gameoflife">game of life</a> - conway's game of life. click for more details :)
+        </div>
+        <div class="link-item">
+            <a href="/converter">converters</a> - simple conversion tools. powered by ffmpeg (media)
+        </div>
+        <div class="link-item">
+            <a href="/links">linksapling</a> - all my links
+        </div>
+
+        <!-- THE BUTTON -->
+        <div class="link-item">
+            <a href="/click-the-button" class="corrupt-link">THE BUTTON</a> - mysterious button
+        </div>
+    </div>
+	<div class="link-item">
+		<a href="/writer">writer</a> - markdown writer
+    <div class="footer">
+        <p>// snack machine status: out of order</p>
+        <p>// please send snaks</p>
+        <p style="margin-top: 10px;">system uptime: forever<span class="blink">_</span></p>
+    </div>
+</div>
+
+<!-- GLITCH SCRIPT (ONLY TARGETS THE BUTTON) -->
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&▓▒░█";
+  const el = document.querySelector(".corrupt-link");
+  if (!el) return;
+
+  const original = el.textContent;
+
+  function rand(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+
+  function corruptBurst() {
+    let duration = rand(50, 500);
+    let start = performance.now();
+
+    function frame(now) {
+      if (now - start >= duration) {
+        el.textContent = original;
+        el.style.transform = "";
+        scheduleNext();
+        return;
+      }
+
+      el.style.transform =
+        `translate(${rand(-4,4)}px, ${rand(-4,4)}px)
+         skew(${rand(-3,3)}deg)`;
+
+      let corrupted = "";
+      for (let i = 0; i < original.length; i++) {
+        if (original[i] === " ") {
+          corrupted += " ";
+          continue;
+        }
+        corrupted += Math.random() < 0.7
+          ? letters[Math.floor(Math.random() * letters.length)]
+          : original[i];
+      }
+
+      el.textContent = corrupted;
+      requestAnimationFrame(frame);
+    }
+
+    requestAnimationFrame(frame);
+  }
+
+  function scheduleNext() {
+    setTimeout(corruptBurst, rand(50, 500));
+  }
+
+  scheduleNext();
+});
+</script>
+
+</body>
+</html>

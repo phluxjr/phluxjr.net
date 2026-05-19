@@ -1,0 +1,19 @@
+{{ define "main" }}
+<div class="container">
+    <div class="prompt">cat {{ .File.BaseFileName }}.md</div>
+    
+    <h1>{{ .Title }}</h1>
+    <p style="opacity: 0.6;">{{ .Date.Format "January 2, 2006" }}</p>
+    
+    <div style="margin: 30px 0;">
+        {{ .Content }}
+    </div>
+    
+    <div class="footer">
+        <p><a href="/blog/">← back to blog</a> | <a href="/">home</a></p>
+        <p>// snack machine status: out of order</p>
+        <p>// please send snaks</p>
+        <p style="margin-top: 10px;">system uptime: <a href="/blue" style="color: rgb(0, 154, 206); text-decoration: none;"><style>a[href="/blue"]::before, a[href="/blue"]::after { content: none !important; }</style>forever</a><span class="blink">_</span></p>
+    </div>
+</div>
+{{ end }}

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>peaceful... mostly</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    body {
+      overflow: hidden;
+      background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      font-family: monospace;
+      color: #eee;
+    }
+
+    .scene {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    .stars {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 3s infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    .moon {
+      position: absolute;
+      top: 15%;
+      right: 20%;
+      width: 100px;
+      height: 100px;
+      background: #f4f1de;
+      border-radius: 50%;
+      box-shadow: 0 0 40px rgba(244, 241, 222, 0.5);
+      animation: float 6s ease-in-out infinite;
+      cursor: pointer;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .chaos-element {
+      position: absolute;
+      font-size: 48px;
+      animation: chaos 2s linear infinite;
+      cursor: pointer;
+    }
+
+    @keyframes chaos {
+      0% { transform: rotate(0deg) scale(1); }
+      25% { transform: rotate(90deg) scale(1.2); }
+      50% { transform: rotate(180deg) scale(0.8); }
+      75% { transform: rotate(270deg) scale(1.3); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+
+    .message {
+      z-index: 10;
+      text-align: center;
+      font-size: 24px;
+      text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.7; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
+    }
+
+    .subtitle {
+      font-size: 14px;
+      margin-top: 10px;
+      opacity: 0.6;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+<!--#include virtual="/partials/sidebar.html" -->
+  <div class="scene">
+    <div class="stars" id="stars"></div>
+    <div class="moon"></div>
+    <div class="chaos-element" id="chaos">🔥</div>
+    <canvas id="canvas"></canvas>
+    
+    <div class="message">
+      <div>everything is calm</div>
+      <div class="subtitle">(mostly)</div>
+    </div>
+  </div>
+
+  <script>
+    // achievement system
+    let achievementState = {
+      moonClicks: 0,
+      skullClicks: 0,
+      mClicks: 0,
+      circusClicks: 0,
+      stage: 0 // 0=not started, 1=moon done, 2=skull done, 3=m done, 4=circus done, 5=final moon, 6=complete
+    };
+
+    function showDialogue(text) {
+      alert(text);
+    }
+
+    function checkAchievement() {
+      if (achievementState.stage === 0 && achievementState.moonClicks >= 5) {
+        achievementState.stage = 1;
+        achievementState.moonClicks = 0;
+        showDialogue("oh come on, did you really just do that for the achievement? click on the moon five times-- is that really it? i want people to work for my trophies. go click on the skull emoji 10 times");
+      } else if (achievementState.stage === 1 && achievementState.skullClicks >= 10) {
+        achievementState.stage = 2;
+        showDialogue("hmm this still doesn't feel like enough. click on the letter 'm' 20 times");
+      } else if (achievementState.stage === 2 && achievementState.mClicks >= 20) {
+        achievementState.stage = 3;
+        showDialogue("we must have MORE!! GO CLICK ON THE CIRCUS 5 TIMES!!");
+        // add circus emoji
+        const chaos = document.getElementById('chaos');
+        chaos.textContent = '🎪';
+      } else if (achievementState.stage === 3 && achievementState.circusClicks >= 5) {
+        achievementState.stage = 4;
+        achievementState.moonClicks = 0;
+        showDialogue("YES!! NOW GO CLICK ON THE MOON FIVE MORE TIMES!!!");
+      } else if (achievementState.stage === 4 && achievementState.moonClicks >= 5) {
+        achievementState.stage = 5;
+        if (confirm("YEAH!!!!!! okay, that was good. you've earned the achievement, please consent to cookies.")) {
+          document.cookie = "peaceful_achievement=true; max-age=31536000; path=/";
+          showDialogue("achievement unlocked! check out /achievements");
+        }
+      }
+    }
+
+    // generate stars
+    const starsContainer = document.getElementById('stars');
+    for (let i = 0; i < 100; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      star.style.width = Math.random() * 3 + 'px';
+      star.style.height = star.style.width;
+      star.style.left = Math.random() * 100 + '%';
+      star.style.top = Math.random() * 100 + '%';
+      star.style.animationDelay = Math.random() * 3 + 's';
+      starsContainer.appendChild(star);
+    }
+
+    // chaos element movement
+    const chaos = document.getElementById('chaos');
+    function moveChaos() {
+      const x = Math.random() * (window.innerWidth - 100);
+      const y = Math.random() * (window.innerHeight - 100);
+      chaos.style.left = x + 'px';
+      chaos.style.top = y + 'px';
+      
+      // random emoji (unless circus mode)
+      if (achievementState.stage !== 3 && achievementState.stage !== 4) {
+        const emojis = ['🔥', '⚡', '💀', '🌀', '✨', '💥', '🎪'];
+        chaos.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      }
+    }
+    setInterval(moveChaos, 2000);
+    moveChaos();
+
+    // click handlers
+    document.querySelector('.moon').addEventListener('click', () => {
+      if (achievementState.stage === 0 || achievementState.stage === 4) {
+        achievementState.moonClicks++;
+        checkAchievement();
+      }
+    });
+
+    chaos.addEventListener('click', () => {
+      const emoji = chaos.textContent;
+      if (achievementState.stage === 1 && emoji === '💀') {
+        achievementState.skullClicks++;
+        checkAchievement();
+      } else if (achievementState.stage === 3 && emoji === '🎪') {
+        achievementState.circusClicks++;
+        checkAchievement();
+      }
+    });
+
+    // track 'm' keypresses
+    document.addEventListener('keypress', (e) => {
+      if (achievementState.stage === 2 && e.key.toLowerCase() === 'm') {
+        achievementState.mClicks++;
+        checkAchievement();
+      }
+    });
+
+    // cozy particle trail on mouse move
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const particles = [];
+
+    window.addEventListener('mousemove', (e) => {
+      particles.push({
+        x: e.clientX,
+        y: e.clientY,
+        size: Math.random() * 3 + 1,
+        life: 1
+      });
+    });
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        ctx.fillStyle = `rgba(244, 241, 222, ${p.life})`;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+        
+        p.life -= 0.02;
+        p.y -= 0.5;
+        
+        if (p.life <= 0) {
+          particles.splice(i, 1);
+        }
+      }
+      
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>not yet - phluxjr.net</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    body {
+      background: #0a0a0a;
+      color: #666;
+      font-family: monospace;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    .container {
+      text-align: center;
+      animation: fade-in 2s ease-in;
+    }
+
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .message {
+      font-size: 48px;
+      margin-bottom: 20px;
+      color: #444;
+    }
+
+    .hint {
+      font-size: 16px;
+      opacity: 0;
+      animation: hint-appear 1s ease-in 3s forwards;
+    }
+
+    @keyframes hint-appear {
+      to { opacity: 0.5; }
+    }
+
+    .eyes {
+      font-size: 24px;
+      margin-top: 30px;
+      letter-spacing: 10px;
+      animation: blink 3s infinite;
+    }
+
+    .bad-time {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      font-size: 14px;
+      opacity: 0.6;
+      transition: opacity 0.3s;
+      text-decoration: none;
+      color: #666;
+    }
+
+    .bad-time:hover {
+      opacity: 1;
+    }
+
+    @keyframes blink {
+      0%, 49%, 51%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    a {
+      color: #666;
+      text-decoration: none;
+      opacity: 0.3;
+      transition: opacity 0.3s;
+    }
+
+    a:hover {
+      opacity: 1;
+    }
+
+    .particles {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      background: #222;
+      width: 2px;
+      height: 2px;
+      opacity: 0.3;
+      animation: float-up 10s infinite;
+    }
+
+    @keyframes float-up {
+      0% {
+        transform: translateY(100vh) translateX(0);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.3;
+      }
+      90% {
+        opacity: 0.3;
+      }
+      100% {
+        transform: translateY(-100vh) translateX(50px);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+<!--#include virtual="/partials/sidebar.html" -->
+  <div class="particles" id="particles"></div>
+  
+  <div class="container">
+    <div class="message">not yet...</div>
+    <div class="hint">go explore. find things. click stuff.</div>
+    <div style="margin-top: 40px;">
+      <a href="/">← go back</a>
+    </div>
+  </div>
+
+  <a href="/badtime" class="bad-time" id="bad-time" style="display: none;">do ya wanna have a bad time?</a>
+
+  <script>
+    // 5% chance to show bad time link
+    if (Math.random() < 0.05) {
+      document.getElementById('bad-time').style.display = 'block';
+    }
+
+    // generate floating particles
+    const particlesContainer = document.getElementById('particles');
+    for (let i = 0; i < 20; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.animationDelay = Math.random() * 10 + 's';
+      particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+      particlesContainer.appendChild(particle);
+    }
+  </script>
+</body>
+</html>

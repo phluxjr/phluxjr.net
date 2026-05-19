@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>links - phluxjr.net</title>
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    .links-container {
+      max-width: 600px;
+      margin: 50px auto;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .avatar {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      border: 3px solid #cba6f7;
+      margin: 0 auto 20px;
+      display: block;
+      box-shadow: 0 0 20px rgba(203, 166, 247, 0.3);
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #a6adc8;
+      margin-bottom: 30px;
+    }
+
+    .links {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .link-button {
+      background: #181825;
+      border: 2px solid #cba6f7;
+      color: #cba6f7;
+      padding: 15px 20px;
+      text-decoration: none;
+      display: block;
+      transition: all 0.3s;
+      font-family: inherit;
+      font-size: 16px;
+    }
+
+    .link-button:hover {
+      background: #cba6f7;
+      color: #1e1e2e;
+      box-shadow: 0 0 20px rgba(203, 166, 247, 0.5);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <div class="links-container">
+    <img src="https://cdn.bsky.app/img/avatar/plain/did:plc:5cbh4cwectgfzb3miizvh4w3/bafkreiccjlc6qay2myuoqd5364o3rtq2chivgki6gzzofcognytgh7ikme@jpeg" alt="avatar" class="avatar">
+    
+    <h1>phluxjr</h1>
+    <div class="subtitle">chaos enthusiast</div>
+
+    <div class="links" id="links-list">
+      <!-- links loaded from links.json -->
+    </div>
+
+    <a href="/">← back to home</a>
+  </div>
+
+  <script>
+    // fetch and render links from links.json
+    fetch('/links.json')
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById('links-list');
+        data.links.forEach(link => {
+          const a = document.createElement('a');
+          a.href = link.url;
+          a.className = 'link-button';
+          a.textContent = `→ ${link.title}`;
+          container.appendChild(a);
+        });
+      })
+      .catch(err => {
+        console.error('failed to load links:', err);
+        document.getElementById('links-list').innerHTML = '<p>failed to load links :(</p>';
+      });
+  </script>
+</body>
+</html>

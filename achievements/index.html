@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>achievements - phluxjr.net</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    body {
+      background: #1a1a2e;
+      color: #eee;
+      font-family: monospace;
+      padding: 40px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: #c77dff;
+      margin-bottom: 30px;
+    }
+
+    .achievement {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      transition: all 0.3s;
+    }
+
+    .achievement.unlocked {
+      background: rgba(199, 125, 255, 0.1);
+      border-color: #c77dff;
+    }
+
+    .achievement.locked {
+      opacity: 0.4;
+      filter: blur(2px);
+    }
+
+    .achievement-icon {
+      font-size: 48px;
+      min-width: 60px;
+      text-align: center;
+    }
+
+    .achievement-info {
+      flex: 1;
+    }
+
+    .achievement-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .achievement-desc {
+      font-size: 14px;
+      opacity: 0.7;
+    }
+
+    .achievement-status {
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    .unlocked .achievement-status {
+      background: rgba(199, 125, 255, 0.3);
+      color: #c77dff;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 30px;
+      color: #c77dff;
+      text-decoration: none;
+      opacity: 0.7;
+      transition: opacity 0.3s;
+    }
+
+    .back-link:hover {
+      opacity: 1;
+    }
+
+    .stats {
+      margin-bottom: 30px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+<!--#include virtual="/partials/sidebar.html" -->
+  <div class="container">
+    <h1>achievements</h1>
+    
+    <div class="stats">
+      <div>unlocked: <span id="unlocked-count">0</span> / <span id="total-count">0</span></div>
+      <div style="margin-top: 5px; opacity: 0.6;">completion: <span id="percentage">0</span>%</div>
+    </div>
+
+    <div id="achievements-list"></div>
+
+    <a href="/" class="back-link">← back to home</a>
+  </div>
+
+  <script>
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+      return null;
+    }
+
+    // check if any achievements are unlocked, redirect if not
+    const hasAnyAchievement = achievements => {
+      return achievements.some(a => getCookie(a.cookie) === 'true');
+    };
+
+    const achievements = [
+      {
+        id: 'peaceful_achievement',
+        icon: '🏆',
+        title: 'persistent',
+        desc: 'completed the entire peaceful page quest. you really did all that clicking.',
+        cookie: 'peaceful_achievement'
+      },
+      {
+        id: 'hacker',
+        icon: '💻',
+        title: 'hacker',
+        desc: 'pressed f12. welcome to the matrix.',
+        cookie: 'hacker_achievement'
+      },
+      {
+        id: 'secret_1',
+        icon: '🔍',
+        title: '???',
+        desc: '???',
+        cookie: 'secret_1'
+      },
+      {
+        id: 'secret_2',
+        icon: '🎮',
+        title: '???',
+        desc: '???',
+        cookie: 'secret_2'
+      },
+      {
+        id: 'secret_3',
+        icon: '🌟',
+        title: '???',
+        desc: '???',
+        cookie: 'secret_3'
+      }
+    ];
+
+    // redirect if no achievements unlocked
+    if (!hasAnyAchievement(achievements)) {
+      window.location.href = '/notyet';
+    }
+
+    function renderAchievements() {
+      const list = document.getElementById('achievements-list');
+      let unlockedCount = 0;
+
+      achievements.forEach(achievement => {
+        const unlocked = getCookie(achievement.cookie) === 'true';
+        if (unlocked) unlockedCount++;
+
+        const div = document.createElement('div');
+        div.className = `achievement ${unlocked ? 'unlocked' : 'locked'}`;
+        
+        div.innerHTML = `
+          <div class="achievement-icon">${unlocked ? achievement.icon : '🔒'}</div>
+          <div class="achievement-info">
+            <div class="achievement-title">${unlocked ? achievement.title : '???'}</div>
+            <div class="achievement-desc">${unlocked ? achievement.desc : 'locked'}</div>
+          </div>
+          <div class="achievement-status">${unlocked ? 'UNLOCKED' : 'LOCKED'}</div>
+        `;
+        
+        list.appendChild(div);
+      });
+
+      document.getElementById('unlocked-count').textContent = unlockedCount;
+      document.getElementById('total-count').textContent = achievements.length;
+      document.getElementById('percentage').textContent = Math.round((unlockedCount / achievements.length) * 100);
+    }
+
+    renderAchievements();
+  </script>
+</body>
+</html>
