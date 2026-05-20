@@ -60,9 +60,12 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   // apply saved prefs on load
-  applyA11y('bg',   localStorage.getItem('a11y-bg')   || 'on');
-  applyA11y('font', localStorage.getItem('a11y-font') || 'default');
-  applyA11y('size', localStorage.getItem('a11y-size') || 'default');
+  applyA11y('bg',         localStorage.getItem('a11y-bg')         || 'on');
+  applyA11y('font',       localStorage.getItem('a11y-font')       || 'default');
+  applyA11y('size',       localStorage.getItem('a11y-size')       || 'default');
+  applyA11y('cursor',     localStorage.getItem('a11y-cursor')     || 'custom');
+  applyA11y('cursorsize', localStorage.getItem('a11y-cursorsize') || 'default');
+  applyA11y('scheme',     localStorage.getItem('a11y-scheme')     || 'default');
 
   // pill clicks
   document.querySelectorAll('.a11y-pill').forEach(btn => {
@@ -91,6 +94,20 @@ document.addEventListener('DOMContentLoaded', function () {
     if (key === 'size') {
       document.documentElement.classList.remove('font-small', 'font-large');
       if (val !== 'default') document.documentElement.classList.add('font-' + val);
+    }
+
+    if (key === 'cursor') {
+      document.documentElement.classList.toggle('no-custom-cursor', val === 'default');
+    }
+
+    if (key === 'cursorsize') {
+      document.documentElement.classList.remove('cursor-small', 'cursor-large', 'cursor-xlarge');
+      if (val !== 'default') document.documentElement.classList.add('cursor-' + val);
+    }
+
+    if (key === 'scheme') {
+      document.documentElement.classList.remove('scheme-dim', 'scheme-contrast');
+      if (val !== 'default') document.documentElement.classList.add('scheme-' + val);
     }
   }
 });
