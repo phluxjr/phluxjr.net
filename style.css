@@ -470,12 +470,26 @@ button:disabled {
 /* ── background ── */
 body {
     background-color: #1e1e2e; /* fallback while image loads */
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
     background-image: url('/assets/bg/setting-woods-wtm.png');
     background-size: cover;
     background-position: center;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
+    image-rendering: pixelated;   /* chrome/edge */
+    image-rendering: crisp-edges; /* firefox */
 }
+
+/* hide bg pseudo-element when accessibility toggle is active */
+body.no-bg::before {
+    display: none;
+}
+
 .container {
     background: rgba(30, 30, 46, 0.75);
     backdrop-filter: blur(12px);
@@ -489,6 +503,7 @@ body {
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
 }
+
 [data-theme="latte"] .container {
     background: rgba(239, 241, 245, 0.75);
     backdrop-filter: blur(12px);
@@ -500,11 +515,8 @@ body {
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
 }
-/* ── accessibility overrides ── */
-body.no-bg {
-    background-image: none;
-}
 
+/* ── accessibility overrides ── */
 body.dyslexic-font,
 body.dyslexic-font * {
     font-family: 'OpenDyslexic', sans-serif !important;
@@ -650,6 +662,7 @@ body.dyslexic-font * {
     border-color: #8839ef;
     color: #8839ef;
 }
+
 /* ── a11y: cursor toggle ── */
 .no-custom-cursor *,
 .no-custom-cursor a,
@@ -660,28 +673,24 @@ body.dyslexic-font * {
 }
 
 /* ── a11y: cursor size ── */
-/* small: hotspot tweak on the 24px originals to feel smaller */
 .cursor-small * { cursor: url('/cursors/left_ptr.png') 6 2, default !important; }
 .cursor-small a,
 .cursor-small button { cursor: url('/cursors/hand2.png') 6 2, pointer !important; }
 .cursor-small input,
 .cursor-small textarea { cursor: url('/cursors/xterm.png') 10 10, text !important; }
 
-/* large: 48x48 upscaled pngs */
 .cursor-large * { cursor: url('/cursors/left_ptr_large.png') 20 6, default !important; }
 .cursor-large a,
 .cursor-large button { cursor: url('/cursors/hand2_large.png') 20 6, pointer !important; }
 .cursor-large input,
 .cursor-large textarea { cursor: url('/cursors/xterm_large.png') 32 32, text !important; }
 
-/* xlarge: 72x72 upscaled pngs */
 .cursor-xlarge * { cursor: url('/cursors/left_ptr_xlarge.png') 30 9, default !important; }
 .cursor-xlarge a,
 .cursor-xlarge button { cursor: url('/cursors/hand2_xlarge.png') 30 9, pointer !important; }
 .cursor-xlarge input,
 .cursor-xlarge textarea { cursor: url('/cursors/xterm_xlarge.png') 48 48, text !important; }
 
-/* no-custom-cursor always wins */
 .no-custom-cursor.cursor-small *,
 .no-custom-cursor.cursor-large *,
 .no-custom-cursor.cursor-xlarge * { cursor: revert !important; }
