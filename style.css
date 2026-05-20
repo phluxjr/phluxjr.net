@@ -21,7 +21,7 @@ body {
 }
 
 .prompt::before {
-    content: "phluxjr@arch:~$ ";
+    content: "phluxjr@net:~$ ";
     color: #b4befe;
 }
 
