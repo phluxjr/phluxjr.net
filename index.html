@@ -3,15 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="google-site-verification" content="pzFIijNoAebV1Dfb6vakG4oUAJ4BY941TYd1lumMMxQ">
     <title>phluxjr.net</title>
     <link rel="stylesheet" href=style.css?v=3>
-    <style>
-
-        /* Only needed so transform doesn't affect layout */
-        .corrupt-link {
-            display: inline-block;
-        }
     </style>
 </head>
 
@@ -117,7 +110,7 @@ document.addEventListener('keydown', (e) => {
 
         <!-- THE BUTTON -->
         <div class="link-item">
-            <a href="/click-the-button" class="corrupt-link">THE BUTTON</a> - mysterious button
+            <a href="/click-the-button">the button</a> - global clicker
         </div>
     </div>
 	<div class="link-item">
@@ -128,61 +121,6 @@ document.addEventListener('keydown', (e) => {
         <p style="margin-top: 10px;">system uptime: forever<span class="blink">_</span></p>
     </div>
 </div>
-
-<!-- GLITCH SCRIPT (ONLY TARGETS THE BUTTON) -->
-<script>
-window.addEventListener('DOMContentLoaded', () => {
-  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&▓▒░█";
-  const el = document.querySelector(".corrupt-link");
-  if (!el) return;
-
-  const original = el.textContent;
-
-  function rand(min, max) {
-    return Math.random() * (max - min) + min;
-  }
-
-  function corruptBurst() {
-    let duration = rand(50, 500);
-    let start = performance.now();
-
-    function frame(now) {
-      if (now - start >= duration) {
-        el.textContent = original;
-        el.style.transform = "";
-        scheduleNext();
-        return;
-      }
-
-      el.style.transform =
-        `translate(${rand(-4,4)}px, ${rand(-4,4)}px)
-         skew(${rand(-3,3)}deg)`;
-
-      let corrupted = "";
-      for (let i = 0; i < original.length; i++) {
-        if (original[i] === " ") {
-          corrupted += " ";
-          continue;
-        }
-        corrupted += Math.random() < 0.7
-          ? letters[Math.floor(Math.random() * letters.length)]
-          : original[i];
-      }
-
-      el.textContent = corrupted;
-      requestAnimationFrame(frame);
-    }
-
-    requestAnimationFrame(frame);
-  }
-
-  function scheduleNext() {
-    setTimeout(corruptBurst, rand(50, 500));
-  }
-
-  scheduleNext();
-});
-</script>
 
 </body>
 </html>
