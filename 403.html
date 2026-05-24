@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>403 - phluxjr.net</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #000;
+      color: #0f0;
+      font-family: 'Courier New', monospace;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .background-403 {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      font-size: 48px;
+      line-height: 60px;
+      opacity: 0.05;
+      overflow: hidden;
+      pointer-events: none;
+      word-wrap: break-word;
+      color: #0f0;
+    }
+
+    .container {
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    h1 {
+      font-size: clamp(6rem, 20vw, 16rem);
+      font-family: 'Courier New', monospace;
+      color: #0f0;
+      text-shadow: 0 0 30px rgba(0, 255, 0, 0.6), 0 0 60px rgba(0, 255, 0, 0.2);
+      letter-spacing: -0.02em;
+      animation: flicker 8s infinite;
+      user-select: none;
+    }
+
+    @keyframes flicker {
+      0%, 94%, 96%, 98%, 100% { opacity: 1; }
+      95%, 97%, 99% { opacity: 0.85; }
+    }
+
+    .ok-btn {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: transparent;
+      color: #0f0;
+      border: 2px solid #0f0;
+      font-family: 'Courier New', monospace;
+      font-size: 1rem;
+      padding: 0.5rem 1.25rem;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+      transition: box-shadow 0.2s, background 0.2s, color 0.2s;
+      display: inline-block;
+    }
+
+    .ok-btn:hover {
+      background: #0f0;
+      color: #000;
+      box-shadow: 0 0 20px rgba(0, 255, 0, 0.6);
+    }
+  </style>
+</head>
+<body>
+  <div class="background-403" id="bg403"></div>
+
+  <div class="container">
+    <h1>no.</h1>
+  </div>
+
+  <script>
+    const bg = document.getElementById('bg403');
+    let bgText = '';
+    for (let i = 0; i < 500; i++) {
+      bgText += '403 ';
+    }
+    bg.textContent = bgText;
+  </script>
+</body>
+</html>
