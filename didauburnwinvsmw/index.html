@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>did auburn win vs milwaukee?</title>
+    <style>
+        body {
+            background-color: #9E1B32; /* Alabama Crimson */
+            color: #FFFFFF;
+            font-family: 'Arial Black', Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        h1 {
+            font-size: clamp(4rem, 20vw, 8rem);
+            margin: 0;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+        }
+        .counter {
+            font-size: clamp(1.2rem, 5vw, 3rem);
+            margin-top: 2rem;
+            color: #CCCCCC;
+            padding: 0 10px;
+        }
+        .photo-section {
+            margin-top: 3rem;
+        }
+        .photo-section img {
+            width: min(300px, 80vw);
+            height: min(300px, 80vw);
+            object-fit: cover;
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        .quote {
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            font-style: italic;
+            font-family: Georgia, serif;
+            margin-top: 1rem;
+            max-width: 600px;
+            padding: 0 20px;
+            color: #EEEEEE;
+        }
+        .footer {
+            margin-top: 2rem;
+            font-size: clamp(0.8rem, 2vw, 1rem);
+            color: #CCCCCC;
+            padding: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                justify-content: flex-start;
+                padding-top: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>NO (13-8)</h1>
+    <div class="counter">
+        it has been <span id="days">0</span> days since auburn last against milwaukee (2026-05-29)
+    </div>
+    
+    <div class="photo-section">
+        <img src="photo.jpg" alt="Photo">
+        <div class="quote">
+            "as long as auburn didn't win, i'm happy" -phluxjr
+        </div>
+    </div>
+    
+    <script>
+        function updateCounter() {
+            const lastWin = new Date('2026-05-29');
+            const today = new Date();
+            const diffTime = Math.abs(today - lastWin);
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            document.getElementById('days').textContent = diffDays;
+        }
+        updateCounter();
+    </script>
+</body>
+</html>
+
