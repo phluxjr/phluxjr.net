@@ -6,7 +6,7 @@ body {
     background: #1e1e2e;
     color: #cdd6f4;
     font-family: 'JetBrainsMono Nerd Font', 'JetBrains Mono', monospace;
-    padding: 40px 20px;
+    padding: 0px 20px;
     min-height: 100vh;
 }
 
@@ -26,6 +26,11 @@ body {
 .container {
     max-width: 900px;
     margin: 0 auto;
+    margin-top: 40px;
+}
+
+.kao-banner {
+    margin-top: -10px;
 }
 
 .prompt {

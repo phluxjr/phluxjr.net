@@ -1,7 +1,7 @@
-# Robots.txt
-
-# all snacks are currently out of order
-# please send snak
+# robots.txt
 
 User-agent: *
 Allow: /
+
+# think of these thoughts as limitless light
+# exposing closing circuitry of fright
